@@ -1,4 +1,4 @@
-package com.example.carrot_market
+package com.example.carrotmarket
 
 import org.junit.Test
 

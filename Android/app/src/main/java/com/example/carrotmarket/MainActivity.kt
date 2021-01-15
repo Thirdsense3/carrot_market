@@ -1,4 +1,4 @@
-package com.example.carrot_market
+package com.example.carrotmarket
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

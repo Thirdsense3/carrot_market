@@ -7,7 +7,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.example.carrot_market"
+        applicationId "com.example.carrotmarket"
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
