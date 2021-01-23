@@ -19,6 +19,11 @@ public class MemoryMemberRepository implements MemberRepository {
     }
 
     @Override
+    public Member load(String email){
+        return store.get(email);
+    }
+
+    @Override
     public Optional<Member> findByEmail(String Email) {
         return Optional.ofNullable(store.get(Email));
     }

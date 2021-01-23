@@ -8,6 +8,14 @@ public class Member {
     private String location;
     private String nickname;
 
+    public Member(String email, String password, String name, String location, String nickname) {
+        this.Email = email;
+        this.password = password;
+        this.name = name;
+        this.location = location;
+        this.nickname = nickname;
+    }
+
     public String getEmail() {
         return Email;
     }

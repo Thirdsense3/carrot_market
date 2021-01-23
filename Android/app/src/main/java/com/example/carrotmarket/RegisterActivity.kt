@@ -95,15 +95,16 @@ class RegisterActivity : AppCompatActivity() {
             currentPhotoPath=absolutePath
         }
     }
+
 }
 
-class Member(email: String, password: String, name: String, nickname: String, /*photo,*/ iscorretphonenumber: Boolean, town : String){
+class Member(email: String, password: String, name: String, nickname: String, /*photo,*/ iscorrectphonenumber: Boolean, town : String){
     var email : String ="";
     var password: String ="";
     var name : String="";
     var nickname : String="";
     var photo="";
-    var iscorretphonenumber : Boolean =false;
+    var iscorrectphonenumber : Boolean =false;
     var town : String ="";
 
     init {
@@ -112,8 +113,7 @@ class Member(email: String, password: String, name: String, nickname: String, /*
         this.name = name;
         this.nickname = nickname;
         /*this.photo = photo;*/
-        this.iscorretphonenumber = iscorretphonenumber;
+        this.iscorrectphonenumber = iscorrectphonenumber;
         this.town = town;
-
     }
 }
