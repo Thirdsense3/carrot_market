@@ -18,18 +18,10 @@ public class RegisterService{
     }
 
     public void id_check(String emailId){
-        //TODO memberRepository.findByEmail로 NULL 검사
-        Member member = memberRepository.load(emailId);
-        if(member.getEmail() != null){
-            //TODO 중복 이메일 존재
-        }
-        else{
-            join(member);
-        }
+
     }
 
-    public void join(Member member){
-        //TODO 중복검사 후 입력받은 멤버 클래스 저장
-        memberRepository.save(member);
+    public void join(Optional<Member> member){
+
     }
 }
