@@ -2,14 +2,17 @@ package CarrotMarket.CarrotMarket.domain;
 
 public class Member {
 
-    private String Email;
+    private String email;
     private String password;
     private String name;
     private String location;
     private String nickname;
 
+    public Member()
+    {}
+
     public Member(String email, String password, String name, String location, String nickname) {
-        this.Email = email;
+        this.email = email;
         this.password = password;
         this.name = name;
         this.location = location;
@@ -17,11 +20,11 @@ public class Member {
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public String getPassword() {

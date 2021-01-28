@@ -2,6 +2,9 @@ package CarrotMarket.CarrotMarket.service;
 
 import CarrotMarket.CarrotMarket.domain.Member;
 import CarrotMarket.CarrotMarket.repository.MemberRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -22,15 +25,35 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public boolean login(String Email, String password) {
+    public String login(String Email, String password) throws JsonProcessingException {
         // 로그인
         AtomicBoolean attempt = new AtomicBoolean(false);
+        AtomicBoolean compare = new AtomicBoolean(false);
         Optional<Member> member = memberRepository.findByEmail(Email);
-        member.ifPresent( value -> {if(value.getPassword() == password) {
+        member.ifPresent( value -> {if(value.getPassword().equals(password)) {
+            attempt.set(true);
+            compare.set(true);
+        } else {
             attempt.set(true);
         }});
 
-        return attempt.get();
+        String result;
+
+        if(attempt.get()) {
+            if(compare.get()) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                result = objectMapper.writeValueAsString(member.get());
+            } else {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("error", "wrong password");
+                result = jsonObject.toString();
+            }
+        } else {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("error", "invalid email");
+            result = jsonObject.toString();
+        }
+        return result;
     }
 
     public StringBuffer sendCertificationMail(String Email) {
