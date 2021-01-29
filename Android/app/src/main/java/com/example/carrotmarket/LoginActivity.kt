@@ -1,5 +1,6 @@
 package com.example.carrotmarket
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -11,6 +12,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
+import java.lang.Exception
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,27 +30,36 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener() {
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
-
-            val params = HashMap<String, String> ()
-            params["Email"] = email
-            params["password"] = password
-            val jsonObject = JSONObject(params as Map<*, *>)
+            val jsonObject = JSONObject()
+            jsonObject.put("email", email)
+            jsonObject.put("password", password)
 
             val que = Volley.newRequestQueue(this)
 
             // checking response
             val request = JsonObjectRequest(
-                Request.Method.POST, url, jsonObject,
-                { response ->
+                    Request.Method.POST, url, jsonObject,
+                    { response ->
                         try {
-                            textview.text = "Response: $response"
-                        } catch (e:Exception) {
+                            if(!response.get("email").equals("error")) {
+                                // main activity 넘어갈 때, 서버로부터 받은 Member 클래스 값 같이 넘겨줄 예정
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                            } else {
+                                textview.text = response.get("error").toString()
+                            }
+                        } catch (e: Exception) {
                             textview.text = "Exception: $e"
                         }
                     }, {
                 textview.text = "Volley error : $it"
             })
             que.add(request)
+        }
+
+        joinButton.setOnClickListener() {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 }
