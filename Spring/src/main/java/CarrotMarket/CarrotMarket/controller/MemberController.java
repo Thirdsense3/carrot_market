@@ -20,6 +20,18 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    @GetMapping("/")
+    @ResponseBody
+    public String Temp() {
+        Member member = new Member();
+        member.setEmail("HelloSpring");
+        member.setPassword("num12345");
+        memberService.join(member);
+        System.out.println("join : " + member.getEmail());
+
+        return member.getEmail();
+    }
+
     @PostMapping("/login")
     @ResponseBody
     public String loginControl(@RequestBody Member member) {

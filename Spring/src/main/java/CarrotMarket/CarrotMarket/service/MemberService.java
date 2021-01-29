@@ -46,11 +46,13 @@ public class MemberService {
             } else {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("error", "wrong password");
+                jsonObject.put("email", "error");
                 result = jsonObject.toString();
             }
         } else {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("error", "invalid email");
+            jsonObject.put("email", "error");
             result = jsonObject.toString();
         }
         return result;
@@ -85,5 +87,9 @@ public class MemberService {
         }
 
         return Message;
+    }
+
+    public void join(Member member) {
+        memberRepository.save(member);
     }
 }
