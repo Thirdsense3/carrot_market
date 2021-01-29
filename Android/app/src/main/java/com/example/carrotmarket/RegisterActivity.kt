@@ -22,6 +22,7 @@ class RegisterActivity : AppCompatActivity() {
         var email = findViewById<EditText>(R.id.emailEditText)
         var pw = findViewById<EditText>(R.id.passwordEditText)
         var ckpw = findViewById<EditText>(R.id.checkPasswordEditText)
+        var textpw = findViewById<EditText>(R.id.checkpwTextView)
         var nn = findViewById<EditText>(R.id.nickNameEditText)
         var location = findViewById<EditText>(R.id.locationEditText)
 
@@ -48,13 +49,15 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(pw.toString() == ckpw.toString() && pw.toString() != null){
-                    pwCheck = true;
-                    //TODO "TRUE 결과 출력할 text view 설정"
+                var pw1: String? = pw.toString()
+                var pw2: String? = ckpw.toString()
+                if(pw1 == pw2 && pw1 != null){
+                    pwCheck = true
+                    textpw.setText("비밀번호 일치")
                 }
                 else{
-                    pwCheck = false;
-                    //TODO "FALSE 결과 출력할 text view 설정"
+                    pwCheck = false
+                    textpw.setText("비밀번호 불일치")
                 }
             }
 
@@ -63,14 +66,18 @@ class RegisterActivity : AppCompatActivity() {
         })
     }
 
-    fun auth_ck(){
+    fun auth_ck(): Boolean{
         val email = findViewById<EditText>(R.id.emailEditText)
         //TODO "서버로 보내서 이메일 중복검사"
+
+        return false
     }
 
-    fun nickname_ck(){
+    fun nickname_ck(): Boolean{
         val nickname = findViewById<EditText>(R.id.nickNameEditText)
         //TODO "서버로 보내서 닉네임 중복검사"
+
+        return false
     }
 
     fun join(){

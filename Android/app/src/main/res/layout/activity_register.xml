@@ -6,34 +6,13 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/locationEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="32dp"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickNameEditText" />
-
-    <EditText
-        android:id="@+id/checkPasswordEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginBottom="33dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/nickNameEditText"
-        app:layout_constraintStart_toStartOf="@+id/passwordEditText"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
-
-    <EditText
         android:id="@+id/emailEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginTop="51dp"
         android:layout_marginBottom="23dp"
-        android:text="TextView"
+        android:text="이메일"
         app:layout_constraintBottom_toTopOf="@+id/passwordEditText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -42,10 +21,48 @@
         android:id="@+id/passwordEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="93dp"
-        android:text="TextView"
+        android:layout_marginTop="140dp"
+        android:text="비밀번호"
         app:layout_constraintStart_toStartOf="@+id/emailEditText"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/checkPasswordEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:text="비밀번호 확인"
+        app:layout_constraintStart_toStartOf="@+id/passwordEditText"
+        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+
+    <EditText
+        android:id="@+id/checkpwTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="비밀번호가 일치하지 않습니다."
+        app:layout_constraintStart_toStartOf="@+id/nickNameEditText"
+        app:layout_constraintTop_toBottomOf="@+id/checkPasswordEditText" />
+
+    <EditText
+        android:id="@+id/nickNameEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="56dp"
+        android:text="닉네임"
+        app:layout_constraintStart_toStartOf="@+id/locationEditText"
+        app:layout_constraintTop_toBottomOf="@+id/checkpwTextView" />
+
+    <EditText
+        android:id="@+id/locationEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginBottom="55dp"
+        android:text="지역"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/authButton"
@@ -61,31 +78,20 @@
         android:id="@+id/nickNameButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="127dp"
-        android:layout_marginBottom="124dp"
+        android:layout_marginBottom="23dp"
         android:text="Button"
-        app:layout_constraintBottom_toBottomOf="@+id/joinButton"
+        app:layout_constraintBottom_toTopOf="@+id/checkpwTextView"
         app:layout_constraintEnd_toEndOf="@+id/joinButton"
-        app:layout_constraintStart_toStartOf="@+id/joinButton"
-        app:layout_constraintTop_toTopOf="@+id/authButton" />
+        app:layout_constraintStart_toStartOf="@+id/joinButton" />
 
     <Button
         android:id="@+id/joinButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="302dp"
-        android:layout_marginEnd="87dp"
+        android:layout_marginTop="524dp"
+        android:layout_marginEnd="76dp"
         android:text="Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/nickNameEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@+id/nickNameButton"
-        app:layout_constraintEnd_toEndOf="@+id/locationEditText"
-        app:layout_constraintStart_toStartOf="@+id/locationEditText"
-        app:layout_constraintTop_toTopOf="@+id/nickNameButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>
