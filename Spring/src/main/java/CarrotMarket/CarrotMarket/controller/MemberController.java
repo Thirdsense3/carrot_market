@@ -5,10 +5,9 @@ import CarrotMarket.CarrotMarket.service.MailSender;
 import CarrotMarket.CarrotMarket.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class MemberController {
@@ -34,4 +33,10 @@ public class MemberController {
 
         return result;
     }
+
+//    @ResponseBody
+//    @RequestMapping(value="/register",method = {RequestMethod.GET,RequestMethod.POST})
+//    public String registerControl(HttpServletRequest request) throws Exception{
+//
+//    }
 }
