@@ -42,8 +42,18 @@ class LoginActivity : AppCompatActivity() {
                     { response ->
                         try {
                             if(!response.get("email").equals("error")) {
-                                // main activity 넘어갈 때, 서버로부터 받은 Member 클래스 값 같이 넘겨줄 예정
+                                // 객체 한번에 만드는 방법 고민
                                 val intent = Intent(this, MainActivity::class.java)
+                                val user_email = response.get("email").toString();
+                                val user_password = response.get("password").toString();
+                                val name = response.get("name").toString();
+                                val nickname = response.get("nickname").toString();
+                                val location = response.get("location").toString();
+                                val mem = Member(user_email, user_password, name, nickname, location);
+                                intent.putExtra("member", mem);
+                                // main Activity에서 Member data class로 사용자 정보 받음
+                                // val data = intent.getSerializableExtra("member") as Member
+                                // 위 코드 사용
                                 startActivity(intent)
                             } else {
                                 textview.text = response.get("error").toString()
