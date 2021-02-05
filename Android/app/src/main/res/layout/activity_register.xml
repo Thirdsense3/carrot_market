@@ -45,6 +45,16 @@
         app:layout_constraintTop_toBottomOf="@+id/checkPasswordEditText" />
 
     <EditText
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="12dp"
+        android:text="이름"
+        app:layout_constraintBottom_toTopOf="@+id/nickNameEditText"
+        app:layout_constraintStart_toStartOf="@+id/nickNameEditText" />
+
+    <EditText
         android:id="@+id/nickNameEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -93,5 +103,17 @@
         android:text="Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="130dp"
+        android:layout_marginEnd="131dp"
+        android:layout_marginBottom="68dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/locationEditText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
