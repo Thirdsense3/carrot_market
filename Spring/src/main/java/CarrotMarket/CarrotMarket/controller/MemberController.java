@@ -1,8 +1,10 @@
 package CarrotMarket.CarrotMarket.controller;
 
 import CarrotMarket.CarrotMarket.domain.Member;
+import CarrotMarket.CarrotMarket.repository.MemberRepository;
 import CarrotMarket.CarrotMarket.service.MailSender;
 import CarrotMarket.CarrotMarket.service.MemberService;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 public class MemberController {
 
     private MemberService memberService;
+    public MemberRepository memberRepository;
 
     @Autowired
     public MemberController(MemberService memberService) {
@@ -46,9 +49,12 @@ public class MemberController {
         return result;
     }
 
-//    @ResponseBody
-//    @RequestMapping(value="/register",method = {RequestMethod.GET,RequestMethod.POST})
-//    public String registerControl(HttpServletRequest request) throws Exception{
-//
-//    }
+    @GetMapping("/register/emailcheck")
+    public Boolean emailcheck(@RequestParam String email){
+        Member member = memberRepository.load(email);
+        if(member.getEmail() != null){
+            return true;
+        }
+        return false;
+    }
 }
