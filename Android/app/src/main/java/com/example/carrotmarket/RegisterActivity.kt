@@ -50,7 +50,7 @@ class RegisterActivity : AppCompatActivity() {
         val textView = findViewById<TextView>(R.id.textView)
 
         auth_event.setOnClickListener{
-            auth_ck()
+            auth_ck(email)
         }
 
         nickname_event.setOnClickListener {
@@ -84,9 +84,21 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-    fun auth_ck(): Boolean{
-        val email = findViewById<EditText>(R.id.emailEditText)
+    fun auth_ck(email:String): Boolean{
         //TODO "서버로 보내서 이메일 중복검사"
+        retrofit = RetrofitClient.getInstance()
+        myAPI = retrofit.create(RetrofitService::class.java)
+
+        Runnable { myAPI.getAuth(email).enqueue(object : Callback<Member>{
+            override fun onFailure(call: Call<Member>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
+                TODO("Not yet implemented")
+            }
+        })
+        }.run()
 
         return false
     }
