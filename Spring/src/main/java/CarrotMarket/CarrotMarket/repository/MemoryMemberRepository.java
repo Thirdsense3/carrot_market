@@ -24,7 +24,12 @@ public class MemoryMemberRepository implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findByEmail(String Email) {
-        return Optional.ofNullable(store.get(Email));
+    public Optional<Member> findByEmail(String email) {
+        return Optional.ofNullable(store.get(email));
+    }
+
+    @Override
+    public Optional<Member> findByNickName(String nickname) {
+        return  Optional.ofNullable(store.get(nickname));
     }
 }
