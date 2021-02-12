@@ -6,10 +6,7 @@ import retrofit2.http.*
 
 interface RetrofitService {
 
-    @GET("list")
-    fun getAuth(@Query("id") id : String) : Call<Member>
-
-    @POST("register")
+    @POST("register/member")
     @FormUrlEncoded
     fun signUp(
         @Field("email") email : String,
@@ -18,4 +15,10 @@ interface RetrofitService {
         @Field("nickname") nickname: String,
         @Field("location") location : String
     ): Call<Member>
+
+    @GET("register/emailing/{id}")
+    fun emailing(@Path("id") id: String): Call<Member>
+
+    @GET("register/nicknaming/{nickname}")
+    fun nicknaming(@Path("nickname") nickname: String): Call<Member>
 }
