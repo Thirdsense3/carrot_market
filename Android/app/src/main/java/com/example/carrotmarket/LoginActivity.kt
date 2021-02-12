@@ -50,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
                                 val nickname = response.get("nickname").toString();
                                 val location = response.get("location").toString();
                                 val mem = Member(user_email, user_password, name, nickname, location);
-                                intent.putExtra("member", mem);
+//                                intent.putExtra("member", mem);
                                 // main Activity에서 Member data class로 사용자 정보 받음
                                 // val data = intent.getSerializableExtra("member") as Member
                                 // 위 코드 사용
