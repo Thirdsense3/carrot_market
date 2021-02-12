@@ -89,6 +89,21 @@ public class MemberService {
         return Message;
     }
 
+    public boolean id_check(String email){
+        if(memberRepository.findByEmail(email).isPresent()){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean nickname_check(String nickname){
+        if(memberRepository.findByNickName(nickname).isPresent()){
+            return true;
+        }
+        return false;
+
+    }
+
     public void join(Member member) {
         memberRepository.save(member);
     }
