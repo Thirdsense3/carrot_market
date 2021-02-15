@@ -11,7 +11,11 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.carrotmarket.Network.RetrofitClient
+import com.example.carrotmarket.Network.RetrofitService
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
 import java.lang.Exception
 
 class LoginActivity : AppCompatActivity() {
@@ -30,41 +34,31 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener() {
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
-            val jsonObject = JSONObject()
-            jsonObject.put("email", email)
-            jsonObject.put("password", password)
 
-            val que = Volley.newRequestQueue(this)
+            val retrofit = RetrofitClient.getInstance()
+            val myApi = retrofit.create(RetrofitService::class.java)
 
-            // checking response
-            val request = JsonObjectRequest(
-                    Request.Method.POST, url, jsonObject,
-                    { response ->
-                        try {
-                            if(!response.get("email").equals("error")) {
-                                // 객체 한번에 만드는 방법 고민
-                                val intent = Intent(this, MainActivity::class.java)
-                                val user_email = response.get("email").toString();
-                                val user_password = response.get("password").toString();
-                                val name = response.get("name").toString();
-                                val nickname = response.get("nickname").toString();
-                                val location = response.get("location").toString();
-                                val mem = Member(user_email, user_password, name, nickname, location);
-//                                intent.putExtra("member", mem);
-                                // main Activity에서 Member data class로 사용자 정보 받음
-                                // val data = intent.getSerializableExtra("member") as Member
-                                // 위 코드 사용
-                                startActivity(intent)
-                            } else {
-                                textview.text = response.get("error").toString()
+            Runnable {
+                myApi.login(email, password).enqueue(object : Callback<Member> {
+                    override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
+                        response.body()?.let {
+                            if(!it.email.toString().equals("error")) {
+                                val member = Member(it.email, it.password, it.name, it.location, it.nickname)
+                                textview.text = member.email + " " + member.password
+                                //intent.putExtra("member", member)
+                                //startActivity(intent)
                             }
-                        } catch (e: Exception) {
-                            textview.text = "Exception: $e"
+                            else {
+                                textview.text = "아이디 또는 비밀번호 오류입니다."
+                            }
                         }
-                    }, {
-                textview.text = "Volley error : $it"
-            })
-            que.add(request)
+                    }
+
+                    override fun onFailure(call: Call<Member>, t: Throwable) {
+                        textview.text = t.message
+                    }
+                })
+            }.run()
         }
 
         joinButton.setOnClickListener() {

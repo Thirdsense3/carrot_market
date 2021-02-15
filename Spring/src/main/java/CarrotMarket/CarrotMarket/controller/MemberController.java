@@ -33,6 +33,9 @@ public class MemberController {
         Member member = new Member();
         member.setEmail("HelloSpring");
         member.setPassword("num12345");
+        member.setName("철수");
+        member.setNickname("wooky");
+        member.setLocation("인천");
         memberService.join(member);
         System.out.println("join : " + member.getEmail());
 
@@ -41,17 +44,17 @@ public class MemberController {
 
     @PostMapping("/login")
     @ResponseBody
-    public String loginControl(@RequestBody Member member) {
+    public Member loginControl(Member member) {
         String email = member.getEmail();
         String password = member.getPassword();
-        String result = "";
         try {
-            result = memberService.login(email, password);
+            member = memberService.login(email, password);
+            System.out.println(member.getEmail());
         } catch (Exception e) {
             System.out.println("error : " + e);
         }
 
-        return result;
+        return member;
     }
 
     @RequestMapping(value = "/register/emailing/{email}",method = RequestMethod.GET)

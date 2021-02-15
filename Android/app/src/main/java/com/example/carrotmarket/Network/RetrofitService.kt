@@ -21,4 +21,11 @@ interface RetrofitService {
 
     @GET("register/nicknaming/{nickname}")
     fun nicknaming(@Path("nickname") nickname: String): Call<Member>
+
+    @POST("login")
+    @FormUrlEncoded
+    fun login(
+            @Field("email") email : String,
+            @Field("password") password : String
+    ) : Call<Member>
 }

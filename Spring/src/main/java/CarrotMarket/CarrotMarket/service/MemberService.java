@@ -25,37 +25,24 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public String login(String Email, String password) throws JsonProcessingException {
+    public Member login(String Email, String password) throws JsonProcessingException {
         // 로그인
         AtomicBoolean attempt = new AtomicBoolean(false);
         AtomicBoolean compare = new AtomicBoolean(false);
         Optional<Member> member = memberRepository.findByEmail(Email);
         member.ifPresent( value -> {if(value.getPassword().equals(password)) {
             attempt.set(true);
-            compare.set(true);
-        } else {
-            attempt.set(true);
-        }});
+        } });
 
         String result;
 
-        if(attempt.get()) {
-            if(compare.get()) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                result = objectMapper.writeValueAsString(member.get());
-            } else {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("error", "wrong password");
-                jsonObject.put("email", "error");
-                result = jsonObject.toString();
-            }
-        } else {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("error", "invalid email");
-            jsonObject.put("email", "error");
-            result = jsonObject.toString();
+        if(!attempt.get()) {
+            Member e = new Member();
+            e.setEmail("error");
+            return e;
         }
-        return result;
+
+        return member.get();
     }
 
     public StringBuffer sendCertificationMail(String Email) {
