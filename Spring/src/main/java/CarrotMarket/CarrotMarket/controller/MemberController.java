@@ -86,7 +86,7 @@ public class MemberController {
     }
 
     @RequestMapping(value = "/register/member",method = RequestMethod.POST)
-    public Member join(HttpServletRequest request){
+    public Member join(HttpServletRequest request){ // TODO ("@requestbody 사용해야 하는지 확인")
         Member member = new Member();
         try{
             String email = request.getParameter("email");
@@ -104,5 +104,11 @@ public class MemberController {
             logger.info("저장중 오류 발생");
         }
         return member;
+    }
+
+    @RequestMapping(value = "/register/verifying/{email}",method = RequestMethod.GET)
+    @ResponseBody
+    public StringBuffer verifying(@PathVariable String email){
+        return memberService.sendCertificationMail(email);
     }
 }
