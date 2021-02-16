@@ -28,4 +28,7 @@ interface RetrofitService {
             @Field("email") email : String,
             @Field("password") password : String
     ) : Call<Member>
+
+    @GET("register/verifying/{email}")
+    fun verifying(@Path("email") email: String): Call<String>
 }

@@ -2,6 +2,7 @@ package com.example.carrotmarket
 
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -30,6 +31,7 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var retrofit : Retrofit
     lateinit var myAPI : RetrofitService
     lateinit var member: Member
+    lateinit var emailRandomCode : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +86,9 @@ class RegisterActivity : AppCompatActivity() {
             if(pwCheck&&emailCheck&&nnCheck) {
                 join(email, pw, name, nn, location)
                 //TODO("서버에서 'mailSender'이용해서 다음 Activity에서 체크하기")
+                var nextIntent = Intent(this,VerifyingEmailActivity::class.java)
+                nextIntent.putExtra("emailCode",emailRandomCode)
+                startActivity(nextIntent) // 화면 전환
             }
             else{
                 Toast.makeText(this@RegisterActivity, "잘못된 접근입니다.", Toast.LENGTH_SHORT).show()
@@ -120,17 +125,19 @@ class RegisterActivity : AppCompatActivity() {
         myAPI = retrofit.create(RetrofitService::class.java)
         var emailCheck:String ?= null
 
-        Runnable { myAPI.emailing(email).enqueue(object : Callback<Member>{
-            override fun onFailure(call: Call<Member>, t: Throwable) {
-                Log.d(TAG,t.message)
-            }
+        Runnable {
+            myAPI.emailing(email).enqueue(object : Callback<Member> {
+                override fun onFailure(call: Call<Member>, t: Throwable) {
+                    Log.d(TAG, t.message)
+                }
 
-            override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
-                response.body()?.let {
-                    emailCheck = it.email
-                } ?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
+                    response.body()?.let {
+                        emailCheck = it.email
+                    }
+                            ?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
+                }
+            })
         }.run()
 
         if(emailCheck == null){
@@ -144,17 +151,19 @@ class RegisterActivity : AppCompatActivity() {
         myAPI = retrofit.create(RetrofitService::class.java)
         var nicknameCheck:String ?= null
 
-        Runnable { myAPI.nicknaming(nickname).enqueue(object : Callback<Member>{
-            override fun onFailure(call: Call<Member>, t: Throwable) {
-                Log.d(TAG,t.message)
-            }
+        Runnable {
+            myAPI.nicknaming(nickname).enqueue(object : Callback<Member> {
+                override fun onFailure(call: Call<Member>, t: Throwable) {
+                    Log.d(TAG, t.message)
+                }
 
-            override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
-                response.body()?.let {
-                    nicknameCheck = it.email
-                } ?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
+                    response.body()?.let {
+                        nicknameCheck = it.email
+                    }
+                            ?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
+                }
+            })
         }.run()
 
         if(nicknameCheck != null){
@@ -168,18 +177,39 @@ class RegisterActivity : AppCompatActivity() {
         retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create(RetrofitService::class.java)
 
-        Runnable { myAPI.signUp(email,pw,name,nickname,location).enqueue(object : Callback<Member>{
-            override fun onFailure(call: Call<Member>, t: Throwable) {
-                Log.d(TAG,t.message)
-            }
-
-            override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
-                response.body()?.let {
-                    val memberResponse = Member(it.email,it.password,it.name,it.location,it.nickname)
-                    member = memberResponse
+        Runnable {
+            myAPI.signUp(email, pw, name, nickname, location).enqueue(object : Callback<Member> {
+                override fun onFailure(call: Call<Member>, t: Throwable) {
+                    Log.d(TAG, t.message)
                 }
-            }
-        })
+
+                override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
+                    response.body()?.let {
+                        val memberResponse = Member(it.email, it.password, it.name, it.location, it.nickname)
+                        member = memberResponse
+                    }
+                }
+            })
+        }.run()
+    }
+
+    fun verifying(email: String){
+        retrofit = RetrofitClient.getInstance()
+        myAPI = retrofit.create((RetrofitService::class.java))
+
+        Runnable {
+            myAPI.verifying(email).enqueue(object : Callback<String> {
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.d(TAG, t.message)
+                }
+
+                override fun onResponse(call: Call<String>, response: retrofit2.Response<String>) {
+                    response.body()?.let {
+                        val emailCode = it
+                        emailRandomCode = emailCode
+                    }
+                }
+            })
         }.run()
     }
 
