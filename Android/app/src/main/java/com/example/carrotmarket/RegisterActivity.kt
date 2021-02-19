@@ -1,7 +1,6 @@
 package com.example.carrotmarket
 
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -9,19 +8,19 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import com.example.carrotmarket.Network.RetrofitClient
-import com.example.carrotmarket.Network.RetrofitService
+import com.example.carrotmarket.dto.CertificationCode
+import com.example.carrotmarket.dto.Member
+import com.example.carrotmarket.network.RetrofitClient
+import com.example.carrotmarket.network.RetrofitService
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import java.util.*
 
@@ -31,7 +30,7 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var retrofit : Retrofit
     lateinit var myAPI : RetrofitService
     lateinit var member: Member
-    lateinit var emailRandomCode : String
+    lateinit var certificationcode : CertificationCode
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,26 +38,26 @@ class RegisterActivity : AppCompatActivity() {
 
 
         var email: String = ""
-        var pw: String = ""
         var ckpw = findViewById<EditText>(R.id.checkPasswordEditText)
         var textpw = findViewById<EditText>(R.id.checkpwTextView)
-        var name = findViewById<EditText>(R.id.name).toString()
         var nn: String = ""
-        var location = findViewById<EditText>(R.id.locationEditText).toString()
 
-        val auth_event = findViewById<Button>(R.id.authButton)
-        val nickname_event = findViewById<Button>(R.id.nickNameButton)
-        val join_event = findViewById<Button>(R.id.joinButton)
+        val authEvent = findViewById<Button>(R.id.authButton)
+        val nicknameEvent = findViewById<Button>(R.id.nickNameButton)
+        val joinEvent = findViewById<Button>(R.id.joinButton)
 
         var pwCheck : Boolean = false
         var emailCheck : Boolean = false
         var nnCheck:Boolean =false
 
-        val textView = findViewById<TextView>(R.id.textView)
 
-        auth_event.setOnClickListener{
-            val inputEmail = findViewById<EditText>(R.id.emailEditText).toString()
-            val serverCheck = auth_ck(inputEmail)
+        authEvent.setOnClickListener{
+
+            val inputEmail = findViewById<EditText>(R.id.emailEditText).text.toString()
+
+            Log.v(TAG, "email : $inputEmail")
+
+            val serverCheck = authCk(inputEmail)
             if(serverCheck){
                 Toast.makeText(this@RegisterActivity, "사용가능한 이메일입니다.",Toast.LENGTH_SHORT).show()
                 emailCheck = true;
@@ -69,9 +68,12 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
-        nickname_event.setOnClickListener {
-            val inputNickname = findViewById<EditText>(R.id.nickNameEditText).toString()
-            val serverCheck = nickname_ck(inputNickname)
+        nicknameEvent.setOnClickListener {
+            val inputNickname = findViewById<EditText>(R.id.nickNameEditText).text.toString()
+            Log.v(TAG, "nickname : $inputNickname")
+
+            val serverCheck = nicknameCk(inputNickname)
+
             if(serverCheck){
                 Toast.makeText(this@RegisterActivity, "사용가능한 닉네임입니다.",Toast.LENGTH_SHORT).show()
                 nnCheck = true
@@ -83,15 +85,14 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
-        join_event.setOnClickListener {
+        joinEvent.setOnClickListener {
             Log.d(TAG, "$pwCheck $emailCheck $nnCheck")
-            pwCheck = true
             if(pwCheck&&emailCheck&&nnCheck) {
-                join(email, pw, name, nn, location)
-                //TODO("서버에서 'mailSender'이용해서 다음 Activity에서 체크하기")
-                var nextIntent = Intent(this,VerifyingEmailActivity::class.java)
-                nextIntent.putExtra("emailCode",emailRandomCode)
-                startActivity(nextIntent) // 화면 전환
+                val pw = findViewById<EditText>(R.id.passwordEditText).text.toString()
+                val name = findViewById<EditText>(R.id.nameEditText).text.toString()
+                val location = findViewById<EditText>(R.id.locationEditText).text.toString()
+
+                register(email,pw,name,nn,location)
             }
             else{
                 Toast.makeText(this@RegisterActivity, "잘못된 접근입니다.", Toast.LENGTH_SHORT).show()
@@ -104,10 +105,10 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val pw1: String? = findViewById<EditText>(R.id.passwordEditText).toString()
-                val pw2: String? = findViewById<EditText>(R.id.checkPasswordEditText).toString()
+                val pw1: String = findViewById<EditText>(R.id.passwordEditText).text.toString()
+                val pw2: String = findViewById<EditText>(R.id.checkPasswordEditText).text.toString()
 
-                if(pw1 == pw2 && pw1 != null){
+                if(pw1 == pw2 && pw1.isNotEmpty()){
                     pwCheck = true
                     textpw.setText("비밀번호 일치")
                 }
@@ -123,7 +124,7 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-    fun auth_ck(email:String): Boolean{
+    private fun authCk(email:String): Boolean{
         retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create(RetrofitService::class.java)
         var emailCheck:String ?= null
@@ -134,14 +135,15 @@ class RegisterActivity : AppCompatActivity() {
                     Log.d(TAG, t.message)
                 }
 
-                override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
+                override fun onResponse(call: Call<Member>, response: Response<Member>) {
                     response.body()?.let {
                         emailCheck = it.email
-                    }
-                            ?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
+                    } ?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
                 }
             })
         }.run()
+
+        Log.v(TAG,"이메일 확인 : $emailCheck")
 
         if(emailCheck == null){
             return true
@@ -150,7 +152,7 @@ class RegisterActivity : AppCompatActivity() {
         return false
     }
 
-    fun nickname_ck(nickname: String): Boolean{retrofit = RetrofitClient.getInstance()
+    private fun nicknameCk(nickname: String): Boolean{retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create(RetrofitService::class.java)
         var nicknameCheck:String ?= null
 
@@ -168,6 +170,8 @@ class RegisterActivity : AppCompatActivity() {
             })
         }.run()
 
+        Log.v(TAG,"닉네임 확인 : $nicknameCheck")
+
         if(nicknameCheck != null){
             return false
         }
@@ -175,7 +179,7 @@ class RegisterActivity : AppCompatActivity() {
         return true
     }
 
-    fun join(email:String, pw:String, name: String, nickname: String, location: String){
+    private suspend fun join(email:String, pw:String, name: String, nickname: String, location: String){
         retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create(RetrofitService::class.java)
 
@@ -187,32 +191,64 @@ class RegisterActivity : AppCompatActivity() {
 
                 override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
                     response.body()?.let {
-                        val memberResponse = Member(it.email, it.password, it.name, it.location, it.nickname)
-                        member = memberResponse
+                        member = Member(it.email, it.password, it.name, it.location, it.nickname)
                     }
                 }
             })
         }.run()
+
+        Log.v(TAG, "join 실행")
     }
 
-    fun verifying(email: String){
+    private suspend fun verifying(email: String){
         retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create((RetrofitService::class.java))
+        Log.v(TAG,"인증메일 보냄")
 
         Runnable {
-            myAPI.verifying(email).enqueue(object : Callback<String> {
-                override fun onFailure(call: Call<String>, t: Throwable) {
+            myAPI.verifying(email).enqueue(object : Callback<CertificationCode> {
+                override fun onFailure(call: Call<CertificationCode>, t: Throwable) {
                     Log.d(TAG, t.message)
+                    Log.v(TAG,"연결 실패")
                 }
 
-                override fun onResponse(call: Call<String>, response: retrofit2.Response<String>) {
+                override fun onResponse(call: Call<CertificationCode>, response: retrofit2.Response<CertificationCode>) {
                     response.body()?.let {
-                        val emailCode = it
-                        emailRandomCode = emailCode
-                    }
+                        certificationcode = CertificationCode(it.code)
+                        Log.v(TAG,"인증메일 받음 : ${certificationcode.code}")
+                    }?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
                 }
             })
         }.run()
+
+        Log.v(TAG, "verifying 실행")
+    }
+
+    private fun register(email: String,pw: String, name: String, nickname: String, location: String){
+        /**
+         * Coroutine 이용해서 초기화후에 다음코드 돌아가게 작성
+         * */
+
+        GlobalScope.launch {
+            async {
+                join(email, pw, name, nickname, location)
+            }.await()
+            async {
+                verifying(email)
+            }.await()
+            async {
+                val nextIntent = Intent(this@RegisterActivity, VerifyingEmailActivity::class.java)
+
+                if (this@RegisterActivity::certificationcode.isInitialized) {
+                    nextIntent.putExtra("emailCode", certificationcode.code)
+                    startActivity(nextIntent) // 화면 전환
+                } else {
+                    Log.v(TAG, "초기화 안됨")
+                    Toast.makeText(this@RegisterActivity, "잘못된 접근입니다.", Toast.LENGTH_SHORT).show()
+                }
+            }.await()
+        }
+
     }
 
 }
