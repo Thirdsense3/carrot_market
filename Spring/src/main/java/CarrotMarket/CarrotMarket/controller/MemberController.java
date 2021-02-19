@@ -1,5 +1,6 @@
 package CarrotMarket.CarrotMarket.controller;
 
+import CarrotMarket.CarrotMarket.domain.CertificationCode;
 import CarrotMarket.CarrotMarket.domain.Member;
 import CarrotMarket.CarrotMarket.repository.MemberRepository;
 import CarrotMarket.CarrotMarket.service.MailSender;
@@ -21,6 +22,7 @@ public class MemberController {
 
     private final MemberService memberService;
     public MemberRepository memberRepository;
+    public MailSender mailSender;
 
     @Autowired
     public MemberController(MemberService memberService) {
@@ -57,12 +59,15 @@ public class MemberController {
         return member;
     }
 
-    @RequestMapping(value = "/register/emailing/{email}",method = RequestMethod.GET)
+    @RequestMapping(value = "/register/emailing/{id}",method = RequestMethod.GET)
     @ResponseBody
-    public Member emailing(@PathVariable String email){
+    public Member emailing(@PathVariable String id){
+
+        System.out.println("email : " + id);
+
         Member member = new Member();
-        if(memberService.id_check(email)){
-            member.setEmail(email);
+        if(memberService.id_check(id)){
+            member.setEmail(id);
         }
         else{
             member.setEmail(null);
@@ -75,6 +80,9 @@ public class MemberController {
     @ResponseBody
     public Member nicknaming(@PathVariable String nickname){
         Member member = new Member();
+
+        System.out.println("email : " + nickname);
+
         if(memberService.nickname_check(nickname)){
             member.setNickname(nickname);
         }
@@ -86,14 +94,20 @@ public class MemberController {
     }
 
     @RequestMapping(value = "/register/member",method = RequestMethod.POST)
-    public Member join(HttpServletRequest request){ // TODO ("@requestbody 사용해야 하는지 확인")
-        Member member = new Member();
+    @ResponseBody
+    public Member join(Member member){ // TODO ("@requestbody 사용해야 하는지 확인")
         try{
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
-            String  name = request.getParameter("name");
-            String nickname = request.getParameter("nickname");
-            String location = request.getParameter("location");
+            String email = member.getEmail();
+            String password = member.getPassword();
+            String name = member.getName();
+            String nickname = member.getNickname();
+            String location = member.getLocation();
+
+            System.out.println("email : " + email);
+            System.out.println("password : " + password);
+            System.out.println("name : " + name);
+            System.out.println("nickname : " + nickname);
+            System.out.println("location : " + location);
 
             Member member1 = new Member(email,password,name,nickname,location);
             memberService.join(member1);
@@ -101,14 +115,18 @@ public class MemberController {
             return member;
 
         }catch (Exception e){
-            logger.info("저장중 오류 발생");
+            System.out.println("저장중 오류 발생");
         }
         return member;
     }
 
     @RequestMapping(value = "/register/verifying/{email}",method = RequestMethod.GET)
     @ResponseBody
-    public StringBuffer verifying(@PathVariable String email){
-        return memberService.sendCertificationMail(email);
+    public CertificationCode verifying(@PathVariable String email){
+        System.out.println("인증용 email : " + email);
+        String code = memberService.sendCertificationMail(email).toString();
+        CertificationCode certificationCode = new CertificationCode(code);
+        System.out.println("code : " + certificationCode.getCode());
+        return certificationCode;
     }
 }

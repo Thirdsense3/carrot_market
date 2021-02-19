@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Service
 public class MemberService {
 
-    @Autowired
     JavaMailSender javaMailSender;
     private final MemberRepository memberRepository;
 
@@ -66,6 +65,7 @@ public class MemberService {
             }
         }
 
+        System.out.println("코드 : " + Message);
         // 인증메일 발송
         try {
             mailSender.sendMail(Email, Message, javaMailSender);
@@ -92,6 +92,7 @@ public class MemberService {
     }
 
     public void join(Member member) {
+        System.out.println("저장소에 저장");
         memberRepository.save(member);
     }
 }

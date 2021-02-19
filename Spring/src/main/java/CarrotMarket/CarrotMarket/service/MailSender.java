@@ -25,6 +25,8 @@ public class MailSender {
         // 발신자 변경 제한
         //helper.setFrom("CarrotMarket");
         helper.setText("인증번호 : "+Message.toString());
+
+        System.out.println("메일 보내기 전 Code : "+ Message.toString());
         javaMailSender.send(message);
     }
 }
