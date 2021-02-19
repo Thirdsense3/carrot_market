@@ -6,17 +6,11 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import com.example.carrotmarket.Network.RetrofitClient
-import com.example.carrotmarket.Network.RetrofitService
-import org.json.JSONObject
+import com.example.carrotmarket.dto.Member
+import com.example.carrotmarket.network.RetrofitClient
+import com.example.carrotmarket.network.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
-import java.lang.Exception
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
