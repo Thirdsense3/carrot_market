@@ -1,6 +1,7 @@
-package com.example.carrotmarket.Network
+package com.example.carrotmarket.network
 
-import com.example.carrotmarket.Member
+import com.example.carrotmarket.dto.CertificationCode
+import com.example.carrotmarket.dto.Member
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -30,5 +31,5 @@ interface RetrofitService {
     ) : Call<Member>
 
     @GET("register/verifying/{email}")
-    fun verifying(@Path("email") email: String): Call<String>
+    fun verifying(@Path("email") email: String): Call<CertificationCode>
 }
