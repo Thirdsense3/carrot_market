@@ -78,11 +78,14 @@ class RegisterActivity : AppCompatActivity() {
                 nn = inputNickname
             }
             else{
+                Log.d(TAG,serverCheck.toString())
                 Toast.makeText(this@RegisterActivity, "중복된 닉네임입니다.",Toast.LENGTH_SHORT).show()
             }
         }
 
         join_event.setOnClickListener {
+            Log.d(TAG, "$pwCheck $emailCheck $nnCheck")
+            pwCheck = true
             if(pwCheck&&emailCheck&&nnCheck) {
                 join(email, pw, name, nn, location)
                 //TODO("서버에서 'mailSender'이용해서 다음 Activity에서 체크하기")
@@ -160,17 +163,16 @@ class RegisterActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
                     response.body()?.let {
                         nicknameCheck = it.email
-                    }
-                            ?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
+                    }?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
                 }
             })
         }.run()
 
         if(nicknameCheck != null){
-            return true
+            return false
         }
 
-        return false
+        return true
     }
 
     fun join(email:String, pw:String, name: String, nickname: String, location: String){

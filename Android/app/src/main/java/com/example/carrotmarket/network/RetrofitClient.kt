@@ -1,4 +1,4 @@
-package com.example.carrotmarket.Network
+package com.example.carrotmarket.network
 
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit

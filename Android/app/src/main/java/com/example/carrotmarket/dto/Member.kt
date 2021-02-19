@@ -1,6 +1,4 @@
-package com.example.carrotmarket
-
-import java.io.Serializable
+package com.example.carrotmarket.dto
 
 data class Member(
         var email: String,
