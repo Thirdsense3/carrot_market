@@ -21,6 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity"/>
+        <activity android:name=".VerifyingEmailActivity">
+        </activity>
     </application>
 
     // 카메라 권한 설정
