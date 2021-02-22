@@ -129,7 +129,6 @@ class RegisterActivity : AppCompatActivity() {
         myAPI = retrofit.create(RetrofitService::class.java)
         var emailCheck:String ?= null
 
-        Runnable {
             myAPI.emailing(email).enqueue(object : Callback<Member> {
                 override fun onFailure(call: Call<Member>, t: Throwable) {
                     Log.d(TAG, t.message)
@@ -141,7 +140,6 @@ class RegisterActivity : AppCompatActivity() {
                     } ?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
                 }
             })
-        }.run()
 
         Log.v(TAG,"이메일 확인 : $emailCheck")
 
@@ -156,7 +154,6 @@ class RegisterActivity : AppCompatActivity() {
         myAPI = retrofit.create(RetrofitService::class.java)
         var nicknameCheck:String ?= null
 
-        Runnable {
             myAPI.nicknaming(nickname).enqueue(object : Callback<Member> {
                 override fun onFailure(call: Call<Member>, t: Throwable) {
                     Log.d(TAG, t.message)
@@ -168,7 +165,6 @@ class RegisterActivity : AppCompatActivity() {
                     }?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
                 }
             })
-        }.run()
 
         Log.v(TAG,"닉네임 확인 : $nicknameCheck")
 
@@ -183,7 +179,8 @@ class RegisterActivity : AppCompatActivity() {
         retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create(RetrofitService::class.java)
 
-        Runnable {
+        Log.v(TAG, "join 실행")
+
             myAPI.signUp(email, pw, name, nickname, location).enqueue(object : Callback<Member> {
                 override fun onFailure(call: Call<Member>, t: Throwable) {
                     Log.d(TAG, t.message)
@@ -195,17 +192,16 @@ class RegisterActivity : AppCompatActivity() {
                     }
                 }
             })
-        }.run()
 
-        Log.v(TAG, "join 실행")
+        Log.v(TAG, "join 끝남")
     }
 
     private suspend fun verifying(email: String){
         retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create((RetrofitService::class.java))
-        Log.v(TAG,"인증메일 보냄")
+        Log.v(TAG,"verifying 실행 인증메일 보냄")
 
-        Runnable {
+
             myAPI.verifying(email).enqueue(object : Callback<CertificationCode> {
                 override fun onFailure(call: Call<CertificationCode>, t: Throwable) {
                     Log.d(TAG, t.message)
@@ -219,9 +215,9 @@ class RegisterActivity : AppCompatActivity() {
                     }?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
                 }
             })
-        }.run()
 
-        Log.v(TAG, "verifying 실행")
+
+        Log.v(TAG, "verifying 끝남")
     }
 
     private fun register(email: String,pw: String, name: String, nickname: String, location: String){
