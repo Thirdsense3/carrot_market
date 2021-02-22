@@ -21,8 +21,8 @@ public class MemberController {
     private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
     private final MemberService memberService;
-    public MemberRepository memberRepository;
-    public MailSender mailSender;
+    //public MemberRepository memberRepository;
+    //public MailSender mailSender;
 
     @Autowired
     public MemberController(MemberService memberService) {
