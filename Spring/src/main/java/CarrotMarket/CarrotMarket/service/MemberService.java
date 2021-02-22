@@ -13,13 +13,12 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Service
 public class MemberService {
 
+    @Autowired
     JavaMailSender javaMailSender;
     private final MemberRepository memberRepository;
 
-    @Autowired
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }

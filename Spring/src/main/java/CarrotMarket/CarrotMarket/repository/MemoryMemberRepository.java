@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Repository
 public class MemoryMemberRepository implements MemberRepository {
 
     private static Map<String, Member> store = new HashMap<>();
