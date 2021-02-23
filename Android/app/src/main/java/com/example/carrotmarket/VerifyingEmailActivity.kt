@@ -12,22 +12,22 @@ import androidx.appcompat.app.AppCompatActivity
 class VerifyingEmailActivity : AppCompatActivity()
 {
     private val TAG: String = "VerifyingEmailActivity"
-    lateinit var emailCode: Array<String>
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_verifyingemail)
+        var emailCode: String?= null
 
         if(intent.hasExtra("emailCode")){
-            emailCode = intent.getStringArrayExtra("emailCode")
-            Log.e(TAG,"랜덤 email 코드 값 : $emailCode ")
+            emailCode = intent.getStringExtra("emailCode").toString()
+            Log.d(TAG,"랜덤 email 코드 값 : $emailCode ")
         }
         else{
-            Log.e(TAG,"이메일 코드값 없음")
+            Log.d(TAG,"이메일 코드값 없음")
         }
 
         findViewById<Button>(R.id.verifybutton).setOnClickListener {
-            val inputCode = findViewById<EditText>(R.id.verifyEditText)
+            val inputCode = findViewById<EditText>(R.id.verifyEditText).text.toString()
             if(inputCode == emailCode){
                 Toast.makeText(this@VerifyingEmailActivity, "일치합니다.",Toast.LENGTH_SHORT).show()
                 val nextIntent = Intent(this,LoginActivity::class.java)
