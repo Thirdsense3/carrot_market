@@ -33,11 +33,6 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var member: Member
     lateinit var certificationcode: CertificationCode
 
-    sealed class Result<out R>{
-        data class Success<out T>(val data: T) : Result<T>()
-        data class Error(val exception: Exception) : Result<Nothing>()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -61,7 +56,7 @@ class RegisterActivity : AppCompatActivity() {
 
             val inputEmail = findViewById<EditText>(R.id.emailEditText).text.toString()
 
-            Log.v(TAG, "email : $inputEmail")
+            Log.d(TAG, "email : $inputEmail")
 
             val serverCheck = authCk(inputEmail)
             if (serverCheck) {
@@ -75,7 +70,7 @@ class RegisterActivity : AppCompatActivity() {
 
         nicknameEvent.setOnClickListener {
             val inputNickname = findViewById<EditText>(R.id.nickNameEditText).text.toString()
-            Log.v(TAG, "nickname : $inputNickname")
+            Log.d(TAG, "nickname : $inputNickname")
 
             val serverCheck = nicknameCk(inputNickname)
 
@@ -126,10 +121,6 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-    class SyncViewModel(): ViewModel(){
-
-    }
-
     private fun authCk(email: String): Boolean {
         retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create(RetrofitService::class.java)
@@ -148,7 +139,7 @@ class RegisterActivity : AppCompatActivity() {
             }
         })
 
-        Log.v(TAG, "이메일 확인 : $emailCheck")
+        Log.d(TAG, "이메일 확인 : $emailCheck")
 
         if (emailCheck == null) {
             return true
@@ -175,7 +166,7 @@ class RegisterActivity : AppCompatActivity() {
             }
         })
 
-        Log.v(TAG, "닉네임 확인 : $nicknameCheck")
+        Log.d(TAG, "닉네임 확인 : $nicknameCheck")
 
         if (nicknameCheck != null) {
             return false
@@ -188,7 +179,7 @@ class RegisterActivity : AppCompatActivity() {
         retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create(RetrofitService::class.java)
 
-        Log.v(TAG, "join 실행")
+        Log.d(TAG, "join 실행")
 
         myAPI.signUp(email, pw, name, nickname, location).enqueue(object : Callback<Member> {
             override fun onFailure(call: Call<Member>, t: Throwable) {
@@ -202,43 +193,43 @@ class RegisterActivity : AppCompatActivity() {
             }
         })
 
-        Log.v(TAG, "join 끝남")
+        Log.d(TAG, "join 끝남")
     }
 
     private suspend fun verifying(email: String) {
         retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create((RetrofitService::class.java))
-        Log.v(TAG, "verifying 실행 인증메일 보냄")
+        Log.d(TAG, "verifying 실행 인증메일 보냄")
 
-        CoroutineScope(IO).launch{
+       // CoroutineScope(IO).launch{
             myAPI.verifying(email).enqueue(object : Callback<CertificationCode> {
                 override fun onFailure(call: Call<CertificationCode>, t: Throwable) {
                     Log.d(TAG, t.message)
-                    Log.v(TAG, "연결 실패")
+                    Log.d(TAG, "연결 실패")
                 }
 
                 override fun onResponse(call: Call<CertificationCode>, response: retrofit2.Response<CertificationCode>) {
                     response.body()?.let {
                         certificationcode = CertificationCode(it.code)
-                        Log.v(TAG, "인증메일 받음 : ${certificationcode.code}")
+                        Log.d(TAG, "인증메일 받음 : ${certificationcode.code}")
                     }?: Toast.makeText(this@RegisterActivity, "Body is null", Toast.LENGTH_SHORT).show()
 
                 }
             })
 
-            Log.v(TAG, "verifying 끝남")
-        }
+            Log.d(TAG, "verifying 끝남")
+       // }
     }
 
     private suspend fun checkAndRegister(){
-        val nextIntent = Intent(this@RegisterActivity, VerifyingEmailActivity::class.java)
 
-        if (this@RegisterActivity::certificationcode.isInitialized) {
-            Log.v(TAG, "emailCode : ${certificationcode.code}")
+        if (this::certificationcode.isInitialized) {
+            val nextIntent = Intent(this, VerifyingEmailActivity::class.java)
+            Log.d(TAG, "emailCode : ${certificationcode.code}")
             nextIntent.putExtra("emailCode", certificationcode.code)
             startActivity(nextIntent) // 화면 전환
         } else {
-            Log.v(TAG, "초기화 안됨")
+            Log.d(TAG, "초기화 안됨")
             Toast.makeText(this@RegisterActivity, "잘못된 접근입니다.", Toast.LENGTH_SHORT).show()
         }
     }
@@ -253,10 +244,11 @@ class RegisterActivity : AppCompatActivity() {
             join(email, pw, name, nickname, location)
             verifying(email)
 
-            val job = CoroutineScope(Main).launch {
+            /*val job = */CoroutineScope(Main).launch {
+                delay(5000L)
                 checkAndRegister()
             }
-            job.join()
+            /*job.join()*/
         }
     }
 
