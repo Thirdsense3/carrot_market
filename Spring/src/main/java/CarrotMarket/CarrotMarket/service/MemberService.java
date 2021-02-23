@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Random;
@@ -90,6 +91,7 @@ public class MemberService {
 
     }
 
+    @Transactional
     public void join(Member member) {
         System.out.println("저장소에 저장");
         memberRepository.save(member);
