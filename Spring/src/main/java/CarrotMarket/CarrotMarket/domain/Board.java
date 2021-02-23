@@ -1,8 +1,16 @@
 package CarrotMarket.CarrotMarket.domain;
 
+import javax.annotation.processing.Generated;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Board {
 
-    private int id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Long price;
     private String title;
     private String text;
@@ -16,11 +24,28 @@ public class Board {
     private int chatCnt;
     //private String picture;
 
-    public int getId() {
+    public Board()
+    {}
+
+    public Board(Long price, String title, String text, int categoryId, String nickname, String registerDate, String deadlineDate, String location) {
+        this.price = price;
+        this.title = title;
+        this.text = text;
+        this.categoryId = categoryId;
+        this.nickname = nickname;
+        this.dibsCnt = 0;
+        this.viewCnt = 0;
+        this.chatCnt = 0;
+        this.registerDate = registerDate;
+        this.deadlineDate = deadlineDate;
+        this.location = location;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

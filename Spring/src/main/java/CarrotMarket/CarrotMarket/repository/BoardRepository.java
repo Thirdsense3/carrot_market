@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface BoardRepository {
 
-    boolean save(Board board);
+    Board save(Board board);
     List<Board> load();
     List<Board> loadByLocation(String location);
     List<Board> loadByCategory(String location, int categoryId);
