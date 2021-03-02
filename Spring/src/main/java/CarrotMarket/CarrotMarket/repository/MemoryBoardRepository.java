@@ -2,48 +2,61 @@ package CarrotMarket.CarrotMarket.repository;
 
 import CarrotMarket.CarrotMarket.domain.Board;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class MemoryBoardRepository implements BoardRepository{
 
     private static Map<Long, Board> store = new HashMap<>();
+    private static Long sequence = 0L;
 
     @Override
-    public boolean save(Board board) {
-        //TODO
-        return false;
+    public Board save(Board board) {
+        board.setId(++sequence);
+        store.put(board.getId(), board);
+        return board;
     }
 
     @Override
     public List<Board> load() {
-        //TODO
-        return null;
+        return new ArrayList<>(store.values());
     }
 
     @Override
     public List<Board> loadByLocation(String location) {
-        //TODO
-        return null;
+        ArrayList<Board> result = new ArrayList<>();
+        store.values().forEach( board -> {
+            if(board.getLocation().equals(location)) {
+                result.add(board);
+            }
+        });
+        return result;
     }
 
     @Override
     public List<Board> loadByCategory(String location, int categoryId) {
-        //TODO
-        return null;
+        ArrayList<Board> result = new ArrayList<>();
+        store.values().forEach( board -> {
+            if(board.getLocation().equals(location) && board.getCategoryId() == categoryId) {
+                result.add(board);
+            }
+        });
+        return result;
     }
 
     @Override
     public List<Board> loadByTitle(String title) {
-        //TODO
-        return null;
+        ArrayList<Board> result = new ArrayList<>();
+        store.values().forEach( board -> {
+            if(board.getTitle().contains(title)) {
+                result.add(board);
+            }
+        });
+        return result;
     }
 
     @Override
     public Optional<Board> findById(Long id) {
-        //TODO
-        return Optional.empty();
+        return Optional.ofNullable(store.get(id));
     }
 }
