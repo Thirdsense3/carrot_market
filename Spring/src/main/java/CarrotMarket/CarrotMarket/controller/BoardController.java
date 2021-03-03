@@ -5,8 +5,11 @@ import CarrotMarket.CarrotMarket.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
 public class BoardController {
@@ -39,6 +42,19 @@ public class BoardController {
             System.out.println("포스팅 오류");
         }
 
+        return board;
+    }
+
+    @GetMapping("/myBoard/{nickname}")
+    @ResponseBody
+    public List<Board> getMyBoard(@PathVariable String nickname) {
+        return boardService.findMyBoard(nickname);
+    }
+
+    @PostMapping("/edit")
+    @ResponseBody
+    public Board editBoard(Board board) {
+        boardService.editBoard(board);
         return board;
     }
 }

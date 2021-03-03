@@ -12,8 +12,14 @@ public class MemoryBoardRepository implements BoardRepository{
 
     @Override
     public Board save(Board board) {
-        board.setId(++sequence);
-        store.put(board.getId(), board);
+        if(board.getId() == null) {
+            board.setId(++sequence);
+            store.put(board.getId(), board);
+        }
+        else {
+            store.replace(board.getId(), board);
+        }
+
         return board;
     }
 
@@ -49,6 +55,17 @@ public class MemoryBoardRepository implements BoardRepository{
         ArrayList<Board> result = new ArrayList<>();
         store.values().forEach( board -> {
             if(board.getTitle().contains(title)) {
+                result.add(board);
+            }
+        });
+        return result;
+    }
+
+    @Override
+    public List<Board> loadByNickname(String nickname) {
+        ArrayList<Board> result = new ArrayList<>();
+        store.values().forEach( board -> {
+            if(board.getNickname().contains(nickname)) {
                 result.add(board);
             }
         });

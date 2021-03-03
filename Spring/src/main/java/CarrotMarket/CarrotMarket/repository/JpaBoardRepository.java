@@ -16,7 +16,16 @@ public class JpaBoardRepository implements BoardRepository{
 
     @Override
     public Board save(Board board) {
-        em.persist(board);
+        if(board.getId() == null) {
+            em.persist(board);
+        } else {
+            em.createQuery("update Board b set b.title = :title, b.text = :text, b.price = :price where b.id = :id")
+                    .setParameter("title", board.getTitle())
+                    .setParameter("text", board.getText())
+                    .setParameter("price", board.getPrice())
+                    .setParameter("id", board.getId())
+                    .executeUpdate();
+        }
         return board;
     }
 
@@ -44,6 +53,13 @@ public class JpaBoardRepository implements BoardRepository{
     public List<Board> loadByTitle(String title) {
         return em.createQuery("select b from Board b where b.title like :title", Board.class)
                 .setParameter("title", "%" + title + "%")
+                .getResultList();
+    }
+
+    @Override
+    public List<Board> loadByNickname(String nickname) {
+        return em.createQuery("select b from Board b where b.nickname = :nickname", Board.class)
+                .setParameter("nickname", nickname)
                 .getResultList();
     }
 
