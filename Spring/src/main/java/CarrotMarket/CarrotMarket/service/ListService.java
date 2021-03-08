@@ -2,12 +2,10 @@ package CarrotMarket.CarrotMarket.service;
 
 import CarrotMarket.CarrotMarket.domain.Board;
 import CarrotMarket.CarrotMarket.repository.BoardRepository;
-import CarrotMarket.CarrotMarket.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class ListService {
 
@@ -21,7 +19,16 @@ public class ListService {
         return boardList;
     }
 
-    public void getBoard(){
+    public Optional<Board> getBoard(Long id){
+        Optional<Board> board = boardRepository.findById(id);
+        if(board.isPresent()){
+            int viewCnt = board.get().getViewCnt();
+            board.get().setViewCnt(viewCnt+1);
+            return board;
+        }
+        else{
+            return Optional.empty();
+        }
         //TODO ("게시물 열람 및 조회수 증가")
     }
 
