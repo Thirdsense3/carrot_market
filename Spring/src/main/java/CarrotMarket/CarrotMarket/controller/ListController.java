@@ -1,11 +1,7 @@
 package CarrotMarket.CarrotMarket.controller;
 
 import CarrotMarket.CarrotMarket.domain.Board;
-import CarrotMarket.CarrotMarket.domain.CertificationCode;
 import CarrotMarket.CarrotMarket.service.ListService;
-import com.google.gson.Gson;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class ListController {
@@ -30,18 +25,16 @@ public class ListController {
         this.listService = listService;
     }
 
-    @RequestMapping(value = "board/list",method = RequestMethod.GET)
+    @RequestMapping(value = "/board/list",method = RequestMethod.GET)
     @ResponseBody
     public List<Board> boardList(){
         List<Board> boardList = listService.getBoardList();
-//        JSONObject jsonObject = new JSONObject();
-//        try{
-//            JSONArray jsonArray = new JSONArray();
-//            for(int i=0;i<boardList.size();i++){
-//                JSONObject jsonObject1 = new JSONObject();
-//                jsonObject1.put("id",)
-//            }
-//        }
         return boardList;
+    }
+
+    @RequestMapping(value = "/board/list/{id}",method = RequestMethod.GET)
+    @ResponseBody
+    public Optional<Board> getBoard(@PathVariable int id, Optional<Board> board){
+        return board;
     }
 }
