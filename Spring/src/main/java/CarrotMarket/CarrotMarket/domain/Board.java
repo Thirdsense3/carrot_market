@@ -27,22 +27,22 @@ public class Board {
     private int chatCnt;
     //private String picture;
 
-    public Board()
-    {}
-
-    public Board(Long price, String title, String text, int categoryId, String nickname, String registerDate, String deadlineDate, String location) {
-        this.price = price;
-        this.title = title;
-        this.text = text;
-        this.categoryId = categoryId;
-        this.nickname = nickname;
-        this.dibsCnt = 0;
-        this.viewCnt = 0;
-        this.chatCnt = 0;
-        this.registerDate = registerDate;
-        this.deadlineDate = deadlineDate;
-        this.location = location;
-    }
+//    public Board()
+//    {}
+//
+//    public Board(Long price, String title, String text, int categoryId, String nickname, String registerDate, String deadlineDate, String location) {
+//        this.price = price;
+//        this.title = title;
+//        this.text = text;
+//        this.categoryId = categoryId;
+//        this.nickname = nickname;
+//        this.dibsCnt = 0;
+//        this.viewCnt = 0;
+//        this.chatCnt = 0;
+//        this.registerDate = registerDate;
+//        this.deadlineDate = deadlineDate;
+//        this.location = location;
+//    }
     //private String picture;
 
 //    public int getId() {
