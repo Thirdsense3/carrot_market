@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.carrotmarket">
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -11,30 +16,24 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.CarrotMarket">
 
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="d97fc6594ad652340a91ce6716edf097"/>
+
         <activity android:name=".MainActivity">
-        </activity>
-        <activity android:name=".RegisterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".RegisterActivity">
+        </activity>
         <activity android:name=".LoginActivity"/>
         <activity android:name=".VerifyingEmailActivity">
         </activity>
     </application>
 
-    // 카메라 권한 설정
-    <uses-permission android:name="android.permission.CAMERA" />
 
-    // 저장 권한 설정 (이미지나 동영상을 기기의 외부 장치에 저장할경우)
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    // 카메라기능이 무조건적으로 필요하지 않을 경우
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
-
-    // 인터넷 퍼미션
-    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
