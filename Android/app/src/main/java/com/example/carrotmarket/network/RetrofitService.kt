@@ -35,5 +35,5 @@ interface RetrofitService {
     fun verifying(@Path("email") email: String): Call<CertificationCode>
 
     @GET("board/list")
-    fun boardList() : Call<Board>
+    fun boardList() : Call<List<Board>>
 }
