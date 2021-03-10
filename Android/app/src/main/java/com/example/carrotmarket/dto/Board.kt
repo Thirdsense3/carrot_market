@@ -12,5 +12,6 @@ data class Board(
         var deadlineDate: String,
         var dibsCnt: Int,
         var viewCnt: Int,
-        var chatCnt: Int
+        var chatCnt: Int,
+        var photo: String
 )
