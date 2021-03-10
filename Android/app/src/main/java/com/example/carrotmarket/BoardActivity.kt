@@ -2,42 +2,66 @@ package com.example.carrotmarket
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.network.RetrofitClient
 import com.example.carrotmarket.network.RetrofitService
+import kotlinx.android.synthetic.main.activity_boardlist.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class BoardActivity: AppCompatActivity() {
     private val TAG = "BoardActivity"
-    lateinit var board: Board
+    var boardlist = mutableListOf<Board>()
+    val url = "http://10.0.2.2:8080/login"
+    private val retrofit = RetrofitClient.getInstance()
+    private val myAPI: RetrofitService = retrofit.create(RetrofitService::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_boardlist)
-        val url = "http://10.0.2.2:8080/login"
-        val retrofit = RetrofitClient.getInstance()
-        val myAPI = retrofit.create(RetrofitService::class.java)
-
 
         CoroutineScope(IO).launch {
-            myAPI.boardList().enqueue(object : Callback<Board>{
-                override fun onFailure(call: Call<Board>, t: Throwable) {
-                    TODO("Not yet implemented")
-                }
+            val resultBoard = getBoardList()
 
-                override fun onResponse(call: Call<Board>, response: Response<Board>) {
-                    response.body()?.let {
-                        board = Board(it.id, it.price,it.title,it.text,it.categoryId,it.location,it.nickname,it.registerDate,it.deadlineDate,it.dibsCnt,it.viewCnt,it.chatCnt)
+            withContext(Main){
+                val boardAdapter = RecyclerAdapter(this@BoardActivity,boardlist){
+                    TODO("게시물 클릭시 처리")
+                }
+                boardRecyclerView.adapter = boardAdapter
+
+                val lm = LinearLayoutManager(this@BoardActivity)
+                boardRecyclerView.layoutManager = lm
+                boardRecyclerView.setHasFixedSize(true)
+            }
+        }
+
+
+    }
+
+    private suspend fun getBoardList(){
+        myAPI.boardList().enqueue(object : Callback<List<Board>>{
+            override fun onFailure(call: Call<List<Board>>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onResponse(call: Call<List<Board>>, response: Response<List<Board>>) {
+                response.body()?.let {
+                    for (item in it){
+                        val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.location,item.nickname,item.registerDate,item.deadlineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.photo)
+                        boardlist.add(board)
                     }
                 }
-            })
-
-        }
+            }
+        })
     }
 
 }
+
