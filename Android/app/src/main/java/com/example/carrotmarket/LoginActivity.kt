@@ -4,9 +4,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
+import com.example.carrotmarket.dto.AccountSharedPreferences
 import com.example.carrotmarket.dto.Member
+import com.example.carrotmarket.dto.MyData
 import com.example.carrotmarket.network.RetrofitClient
 import com.example.carrotmarket.network.RetrofitService
 import retrofit2.Call
@@ -23,7 +26,15 @@ class LoginActivity : AppCompatActivity() {
         val loginButton = findViewById<Button>(R.id.loginButton);
         // testing response
         val textview = findViewById<TextView>(R.id.textview)
+        val autoLogin = findViewById<CheckBox>(R.id.autoLogin)
+        val intent = Intent(this, BoardActivity::class.java)
 
+
+        val check = AccountSharedPreferences.getUserData(this)
+        if(check.email != "") {
+            MyData.saveMyData(check)
+            startActivity(intent)
+        }
 
         loginButton.setOnClickListener() {
             val email = emailEditText.text.toString()
@@ -39,8 +50,12 @@ class LoginActivity : AppCompatActivity() {
                             if(!it.email.toString().equals("error")) {
                                 val member = Member(it.email, it.password, it.name, it.location, it.nickname)
                                 textview.text = member.email + " " + member.password
-                                //intent.putExtra("member", member)
-                                //startActivity(intent)
+
+                                MyData.saveMyData(member)
+
+                                if(autoLogin.isChecked())
+                                    AccountSharedPreferences.setUserData(this@LoginActivity, member)
+                                startActivity(intent)
                             }
                             else {
                                 textview.text = "아이디 또는 비밀번호 오류입니다."

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".PostBoardActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/titleText"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:ems="10"
+            android:hint="제목"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toTopOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="49dp" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="132dp"
+            android:src="@drawable/ic_launcher_foreground" />
+
+        <EditText
+            android:id="@+id/priceText"
+            android:layout_width="wrap_content"
+            android:layout_height="62dp"
+            android:layout_marginTop="36dp"
+            android:ems="10"
+            android:hint="가격"
+            android:inputType="number"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            tools:layout_editor_absoluteX="222dp" />
+
+        <EditText
+            android:id="@+id/textMessage"
+            android:layout_width="313dp"
+            android:layout_height="80dp"
+            android:layout_gravity="top"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:hint="내용"
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"
+            app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2"
+            tools:layout_editor_absoluteX="51dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="카테고리 선택" />
+
+        <Spinner
+            android:id="@+id/categoryChoice"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:text="카테고리" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/picture"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="사진 찍기" />
+
+        <Button
+            android:id="@+id/album"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="앨범에서 가져오기" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/posting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="125dp"
+            android:text="게시글 등록" />
+    </LinearLayout>
+
+</LinearLayout>

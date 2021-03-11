@@ -54,4 +54,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/textview"
         android:text="NULL"/>
+
+    <CheckBox
+        android:id="@+id/autoLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="자동 로그인" />
 </LinearLayout>
