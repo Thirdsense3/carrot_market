@@ -3,7 +3,6 @@ package CarrotMarket.CarrotMarket.service;
 import CarrotMarket.CarrotMarket.domain.Board;
 import CarrotMarket.CarrotMarket.repository.BoardRepository;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 

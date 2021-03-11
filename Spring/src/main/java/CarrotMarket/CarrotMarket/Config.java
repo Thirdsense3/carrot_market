@@ -2,6 +2,11 @@ package CarrotMarket.CarrotMarket;
 
 import CarrotMarket.CarrotMarket.repository.*;
 import CarrotMarket.CarrotMarket.service.BoardService;
+import CarrotMarket.CarrotMarket.repository.BoardRepository;
+import CarrotMarket.CarrotMarket.repository.MemberRepository;
+import CarrotMarket.CarrotMarket.repository.MemoryBoardRepository;
+import CarrotMarket.CarrotMarket.repository.MemoryMemberRepository;
+import CarrotMarket.CarrotMarket.service.ListService;
 import CarrotMarket.CarrotMarket.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -40,4 +45,10 @@ public class Config {
         //return new JpaBoardRepository(em);
         return new MemoryBoardRepository();
     }
+
+    @Bean
+    public ListService listService(){
+        return  new ListService((boardRepository()));
+    }
+
 }

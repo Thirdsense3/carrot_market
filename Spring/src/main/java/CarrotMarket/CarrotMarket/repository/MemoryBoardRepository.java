@@ -19,7 +19,6 @@ public class MemoryBoardRepository implements BoardRepository{
         else {
             store.replace(board.getId(), board);
         }
-
         return board;
     }
 
