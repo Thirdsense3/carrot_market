@@ -28,7 +28,7 @@ import java.util.*
 class PostBoardActivity : AppCompatActivity() {
 
     val board : Board = Board(0,0,"","",0,0F,0F,"", "", "", 0, 0, 0, null)
-    val REQUEST_IMAGE_CAPTURE = 1
+    private val REQUEST_IMAGE_CAPTURE = 1
     lateinit var curPhotoPath : String
     lateinit var image : ImageView
 
