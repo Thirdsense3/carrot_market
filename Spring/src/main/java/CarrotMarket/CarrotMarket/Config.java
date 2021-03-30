@@ -42,8 +42,8 @@ public class Config {
 
     @Bean
     public BoardRepository boardRepository() {
-        //return new JpaBoardRepository(em);
-        return new MemoryBoardRepository();
+        return new JpaBoardRepository(em);
+        //return new MemoryBoardRepository();
     }
 
     @Bean
