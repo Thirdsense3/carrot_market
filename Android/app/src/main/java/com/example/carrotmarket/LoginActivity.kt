@@ -27,7 +27,7 @@ class LoginActivity : AppCompatActivity() {
         // testing response
         val textview = findViewById<TextView>(R.id.textview)
         val autoLogin = findViewById<CheckBox>(R.id.autoLogin)
-        val intent = Intent(this, BoardActivity::class.java)
+        val intent = Intent(this, PostBoardActivity::class.java)
 
 
         val check = AccountSharedPreferences.getUserData(this)

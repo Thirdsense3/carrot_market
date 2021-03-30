@@ -17,6 +17,8 @@ data class Board (
     var dibsCnt : Int,
     var viewCnt : Int,
     var chatCnt : Int,
-    var picture : MultipartBody.Part?
+    var picture : String,
+    var photo : String,
+    var location : String
     //picture
 )
