@@ -36,7 +36,8 @@ public class BoardController {
 
         try {
             String text = board.getText();
-            String location = board.getLocation();
+            String locationX = board.getLocationX();
+            String locationY = board.getLocationY();
             String title = board.getTitle();
             int categoryId = board.getCategoryId();
             String registerDate = board.getRegisterDate();
@@ -44,7 +45,7 @@ public class BoardController {
             Long price = board.getPrice();
             String deadlineDate = board.getDeadlineDate();
 
-            Board board1 = new Board(price, title, text, categoryId, nickname, registerDate, deadlineDate, location);
+            Board board1 = new Board(price, title, text, categoryId, nickname, registerDate, deadlineDate, locationX, locationY);
             boardService.postBoard(board1);
 
         } catch(Exception e) {
@@ -71,7 +72,7 @@ public class BoardController {
     @ResponseBody
     public Board PostBoard(Board board) {
         String baseDir = "C:\\images\\";
-        Board newBoard = new Board(board.getPrice(), board.getTitle(), board.getText(), board.getCategoryId(), board.getNickname(), board.getRegisterDate(), board.getDeadlineDate(), board.getLocation());
+        Board newBoard = new Board(board.getPrice(), board.getTitle(), board.getText(), board.getCategoryId(), board.getNickname(), board.getRegisterDate(), board.getDeadlineDate(), board.getLocationX(), board.getLocationY());
         newBoard.setPicture(baseDir + board.getPicture());
         System.out.println("This : "+newBoard.getDeadlineDate());
         boardService.postBoard(newBoard);

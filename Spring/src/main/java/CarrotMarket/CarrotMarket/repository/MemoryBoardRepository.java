@@ -27,22 +27,22 @@ public class MemoryBoardRepository implements BoardRepository{
         return new ArrayList<>(store.values());
     }
 
-    @Override
-    public List<Board> loadByLocation(String location) {
+    /*@Override
+    public List<Board> loadByLocation(String locationX, String locationY) {
         ArrayList<Board> result = new ArrayList<>();
         store.values().forEach( board -> {
-            if(board.getLocation().equals(location)) {
+            if(board.getLocationX().equals(locationX) && board.getLocationX().equals(locationY)) {
                 result.add(board);
             }
         });
         return result;
-    }
+    }*/
 
     @Override
-    public List<Board> loadByCategory(String location, int categoryId) {
+    public List<Board> loadByCategory(int categoryId) {
         ArrayList<Board> result = new ArrayList<>();
         store.values().forEach( board -> {
-            if(board.getLocation().equals(location) && board.getCategoryId() == categoryId) {
+            if(board.getCategoryId() == categoryId) {
                 result.add(board);
             }
         });

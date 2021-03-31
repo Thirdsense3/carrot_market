@@ -22,7 +22,8 @@ public class Board {
     private String title;
     private String text;
     private int categoryId;
-    private String location;
+    private String locationX;
+    private String locationY;
     private String nickname;
     private String registerDate;
     private String deadlineDate;
@@ -33,7 +34,7 @@ public class Board {
     public Board()
     {}
 
-    public Board(Long price, String title, String text, int categoryId, String nickname, String registerDate, String deadlineDate, String location) {
+    public Board(Long price, String title, String text, int categoryId, String nickname, String registerDate, String deadlineDate, String locationX, String locationY) {
         this.price = price;
         this.title = title;
         this.text = text;
@@ -44,7 +45,8 @@ public class Board {
         this.chatCnt = 0;
         this.registerDate = registerDate;
         this.deadlineDate = deadlineDate;
-        this.location = location;
+        this.locationX = locationX;
+        this.locationY = locationY;
     }
     //private String picture;
 

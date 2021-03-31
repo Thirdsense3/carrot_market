@@ -9,8 +9,8 @@ public interface BoardRepository {
 
     Board save(Board board);
     List<Board> load();
-    List<Board> loadByLocation(String location);
-    List<Board> loadByCategory(String location, int categoryId);
+    //List<Board> loadByLocation(String location);
+    List<Board> loadByCategory(int categoryId);
     List<Board> loadByTitle(String title);
     List<Board> loadByNickname(String nickname);
     Optional<Board> findById(Long id);
