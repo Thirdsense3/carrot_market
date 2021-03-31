@@ -41,8 +41,6 @@ class BoardActivity: AppCompatActivity() {
                 boardRecyclerView.setHasFixedSize(true)
             }
         }
-
-        
     }
 
     private suspend fun getBoardList(){
@@ -54,7 +52,7 @@ class BoardActivity: AppCompatActivity() {
             override fun onResponse(call: Call<List<Board>>, response: Response<List<Board>>) {
                 response.body()?.let {
                     for (item in it){
-                        TODO("board 수정")
+                        TODO("사진 경로 추가시 board 수정")
                         //val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.location,item.nickname,item.registerDate,item.deadlineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.photo)
                         //boardlist.add(board)
                     }

@@ -38,7 +38,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class PostBoardActivity : AppCompatActivity() {
-
     val board : Board = Board(0,0,"","",0,0F,0F,"", "", "", 0, 0, 0, "null", "", "")
     val REQUEST_IMAGE_CAPTURE = 1
     val REQUEST_ALBUM = 2
