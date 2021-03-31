@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.Message;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 @Controller
 public class MemberController {
@@ -35,9 +36,9 @@ public class MemberController {
         Member member = new Member();
         member.setEmail("HelloSpring");
         member.setPassword("num12345");
-        member.setName("철수");
+        member.setName("John");
         member.setNickname("wooky");
-        member.setLocation("인천");
+        member.setLocation("Incheon");
         memberService.join(member);
         System.out.println("join : " + member.getEmail());
 

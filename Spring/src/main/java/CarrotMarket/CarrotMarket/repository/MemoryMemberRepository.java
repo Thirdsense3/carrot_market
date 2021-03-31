@@ -3,9 +3,7 @@ package CarrotMarket.CarrotMarket.repository;
 import CarrotMarket.CarrotMarket.domain.Member;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class MemoryMemberRepository implements MemberRepository {
 
@@ -18,8 +16,8 @@ public class MemoryMemberRepository implements MemberRepository {
     }
 
     @Override
-    public Member load(String email){
-        return store.get(email);
+    public List<Member> load(){
+        return new ArrayList<>(store.values());
     }
 
     @Override

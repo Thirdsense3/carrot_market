@@ -1,7 +1,13 @@
 package com.example.carrotmarket
 
 
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,7 +16,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
+import androidx.core.app.ActivityCompat
 import com.example.carrotmarket.dto.CertificationCode
 import com.example.carrotmarket.dto.Member
 import com.example.carrotmarket.network.RetrofitClient
@@ -22,7 +28,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import java.lang.Exception
+import java.io.IOException
 import java.util.*
 
 class RegisterActivity : AppCompatActivity() {
@@ -32,6 +38,11 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var myAPI: RetrofitService
     lateinit var member: Member
     lateinit var certificationcode: CertificationCode
+    var locationManager : LocationManager? = null
+    private val REQUEST_CODE_LOCATION = 2
+    var currentLocation : String = ""
+    var latitude : Double? = null
+    var longitude : Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -251,6 +262,48 @@ class RegisterActivity : AppCompatActivity() {
             /*job.join()*/
         }
     }
+
+    private fun getCurrentLoc(){
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+        val userLocation: Location = getLatLng()
+
+        /**uesrLocation은 절대 null 불가*/
+
+        latitude = userLocation.latitude
+        Log.d(TAG,"현재 내 위치 값: $latitude, $longitude")
+
+        val mGeocode = Geocoder(applicationContext,Locale.KOREAN)
+        var mResultList : List<Address>? = null
+        try{
+            mResultList = mGeocode.getFromLocation(
+                    latitude!!,longitude!!,1
+            )
+        } catch (e: IOException){
+            e.printStackTrace()
+        }
+        if(mResultList != null){
+            Log.d(TAG,mResultList[0].getAddressLine(0))
+            currentLocation = mResultList[0].getAddressLine(0)
+            /**대한민국 서울 특별시 제외*/
+            currentLocation = currentLocation.substring(11)
+        }
+
+    }
+
+    private fun getLatLng() : Location{
+        var currentLatLng : Location? = null
+        if(ActivityCompat.checkSelfPermission(applicationContext,android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(applicationContext,android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),this.REQUEST_CODE_LOCATION)
+            getLatLng()
+        } else{
+            val locationProvider = LocationManager.GPS_PROVIDER
+            currentLatLng = locationManager?.getLastKnownLocation(locationProvider)
+        }
+
+        return currentLatLng!!
+
+    }
+
 
 }
 
