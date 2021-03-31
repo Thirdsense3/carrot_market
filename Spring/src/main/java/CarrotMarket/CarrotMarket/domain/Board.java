@@ -22,8 +22,8 @@ public class Board {
     private String title;
     private String text;
     private int categoryId;
-    private String locationX;
-    private String locationY;
+    private Float locationX;
+    private Float locationY;
     private String nickname;
     private String registerDate;
     private String deadlineDate;
@@ -34,7 +34,7 @@ public class Board {
     public Board()
     {}
 
-    public Board(Long price, String title, String text, int categoryId, String nickname, String registerDate, String deadlineDate, String locationX, String locationY) {
+    public Board(Long price, String title, String text, int categoryId, String nickname, String registerDate, String deadlineDate, Float locationX, Float locationY) {
         this.price = price;
         this.title = title;
         this.text = text;

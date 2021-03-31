@@ -36,8 +36,8 @@ public class BoardController {
 
         try {
             String text = board.getText();
-            String locationX = board.getLocationX();
-            String locationY = board.getLocationY();
+            Float locationX = board.getLocationX();
+            Float locationY = board.getLocationY();
             String title = board.getTitle();
             int categoryId = board.getCategoryId();
             String registerDate = board.getRegisterDate();

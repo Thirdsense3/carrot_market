@@ -13,17 +13,19 @@ public class Member {
     private String email;
     private String password;
     private String name;
-    private String location;
+    private Float locationX;
+    private Float locationY;
     private String nickname;
 
     public Member()
     {}
 
-    public Member(String email, String password, String name, String location, String nickname) {
+    public Member(String email, String password, String name, Float locationX, Float locationY, String nickname) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.location = location;
+        this.locationX = locationX;
+        this.locationY = locationY;
         this.nickname = nickname;
     }
 
@@ -51,12 +53,17 @@ public class Member {
         this.name = name;
     }
 
-    public String getLocation() {
-        return location;
+    public Float getLocationX() {
+        return locationX;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public Float getLocationY() {
+        return locationY;
+    }
+
+    public void setLocation(Float locationX, Float locationY) {
+        this.locationX = locationX;
+        this.locationY = locationY;
     }
 
     public String getNickname() {

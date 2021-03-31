@@ -4,7 +4,8 @@ create table member
     password varchar(255),
     name varchar(255),
     nickname varchar(255),
-    location varchar(255),
+    locationX Float,
+    locationY Float,
     primary key(email)
 );
 
@@ -16,8 +17,8 @@ title varchar(255),
 text varchar(255),
 category_Id int,
 nickname varchar(255),
-location_x varchar(255),
-location_y varchar(255),
+locationX float,
+locationY float,
 register_Date varchar(255),
 deadline_Date varchar(255),
 dibs_Cnt int,

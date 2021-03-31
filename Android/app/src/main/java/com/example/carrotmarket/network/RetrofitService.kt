@@ -49,7 +49,7 @@ interface RetrofitService {
             @Field ("nickname") nickname : String,
             @Field ("registerDate") registerDate : String,
             @Field ("deadlineDate") deadLineDate : String,
-            @Field ("locationX") locationx : Float,
+            @Field ("locationX") locationX : Float,
             @Field ("locationY") locationY : Float,
             @Field("picture") picture : String
     ) : Call<Board>

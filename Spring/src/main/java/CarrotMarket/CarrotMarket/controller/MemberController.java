@@ -38,7 +38,7 @@ public class MemberController {
         member.setPassword("num12345");
         member.setName("John");
         member.setNickname("wooky");
-        member.setLocation("Incheon");
+        member.setLocation(0F,0F);
         memberService.join(member);
         System.out.println("join : " + member.getEmail());
 
@@ -102,15 +102,16 @@ public class MemberController {
             String password = member.getPassword();
             String name = member.getName();
             String nickname = member.getNickname();
-            String location = member.getLocation();
+            Float locationX = member.getLocationX();
+            Float locationY = member.getLocationY();
 
             System.out.println("email : " + email);
             System.out.println("password : " + password);
             System.out.println("name : " + name);
             System.out.println("nickname : " + nickname);
-            System.out.println("location : " + location);
+            System.out.println("location : " + locationX.toString() + " " + locationY.toString());
 
-            Member member1 = new Member(email,password,name,nickname,location);
+            Member member1 = new Member(email,password,name,locationX, locationY, nickname);
             memberService.join(member1);
 
             return member;
