@@ -18,7 +18,6 @@ data class Board (
     var viewCnt : Int,
     var chatCnt : Int,
     var picture : String,
-    var photo : String,
-    var location : String
+    var photo : String
     //picture
 )

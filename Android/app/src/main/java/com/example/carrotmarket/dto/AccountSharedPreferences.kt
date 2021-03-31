@@ -16,7 +16,8 @@ object AccountSharedPreferences {
         editor.putString("password", input.password)
         editor.putString("nickname", input.nickname)
         editor.putString("name", input.name)
-        editor.putString("location", input.location)
+        editor.putFloat("locationX", input.locationX)
+        editor.putFloat("locationY", input.locationY)
         editor.commit()
     }
 
@@ -26,8 +27,9 @@ object AccountSharedPreferences {
         val password = prefs.getString("password", "").toString()
         val nickname = prefs.getString("nickname", "").toString()
         val name = prefs.getString("name", "").toString()
-        val location = prefs.getString("location", "").toString()
-        val member = Member(email, password, name, location, nickname)
+        val locationX = prefs.getFloat("locationX", 0F)
+        val locationY = prefs.getFloat("locationY", 0F)
+        val member = Member(email, password, name, locationX, locationY, nickname)
 
         return member
     }

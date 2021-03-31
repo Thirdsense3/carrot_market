@@ -100,9 +100,11 @@ class RegisterActivity : AppCompatActivity() {
             if (pwCheck && emailCheck && nnCheck) {
                 val pw = findViewById<EditText>(R.id.passwordEditText).text.toString()
                 val name = findViewById<EditText>(R.id.nameEditText).text.toString()
-                val location = findViewById<EditText>(R.id.locationEditText).text.toString()
+                // TODO locationX, locationY 설정
+                // val location = findViewById<EditText>(R.id.locationEditText).text.toString()
 
-                register(email, pw, name, nn, location)
+                // 임시로 초기값 넣어줬음
+                register(email, pw, name, nn, 0F, 0F)
             } else {
                 Toast.makeText(this@RegisterActivity, "잘못된 접근입니다.", Toast.LENGTH_SHORT).show()
             }
@@ -186,20 +188,20 @@ class RegisterActivity : AppCompatActivity() {
         return true
     }
 
-    private suspend fun join(email: String, pw: String, name: String, nickname: String, location: String) {
+    private suspend fun join(email: String, pw: String, name: String, nickname: String, locationX: Float, locationY: Float) {
         retrofit = RetrofitClient.getInstance()
         myAPI = retrofit.create(RetrofitService::class.java)
 
         Log.d(TAG, "join 실행")
 
-        myAPI.signUp(email, pw, name, nickname, location).enqueue(object : Callback<Member> {
+        myAPI.signUp(email, pw, name, nickname, locationX, locationY).enqueue(object : Callback<Member> {
             override fun onFailure(call: Call<Member>, t: Throwable) {
                 Log.d(TAG, t.message)
             }
 
             override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
                 response.body()?.let {
-                    member = Member(it.email, it.password, it.name, it.location, it.nickname)
+                    member = Member(it.email, it.password, it.name, it.locationX, it.locationY, it.nickname)
                 }
             }
         })
@@ -246,13 +248,13 @@ class RegisterActivity : AppCompatActivity() {
     }
 
 
-    private fun register(email: String, pw: String, name: String, nickname: String, location: String) {
+    private fun register(email: String, pw: String, name: String, nickname: String, locationX : Float, locationY : Float) {
         /**
          * Coroutine 이용해서 초기화후에 다음코드 돌아가게 작성
          * */
 
         CoroutineScope(IO).launch {
-            join(email, pw, name, nickname, location)
+            join(email, pw, name, nickname, locationX, locationY)
             verifying(email)
 
             /*val job = */CoroutineScope(Main).launch {

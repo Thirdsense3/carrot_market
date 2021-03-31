@@ -16,7 +16,8 @@ interface RetrofitService {
         @Field("password") password : String,
         @Field("name") name:String,
         @Field("nickname") nickname: String,
-        @Field("location") location : String
+        @Field("locationX") locationX : Float,
+        @Field("locationY") locationY : Float
     ): Call<Member>
 
     @GET("register/emailing/{id}")
@@ -48,7 +49,8 @@ interface RetrofitService {
             @Field ("nickname") nickname : String,
             @Field ("registerDate") registerDate : String,
             @Field ("deadlineDate") deadLineDate : String,
-            @Field ("location") location : String,
+            @Field ("locationX") locationx : Float,
+            @Field ("locationY") locationY : Float,
             @Field("picture") picture : String
     ) : Call<Board>
 

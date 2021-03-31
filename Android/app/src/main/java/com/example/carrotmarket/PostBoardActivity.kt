@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class PostBoardActivity : AppCompatActivity() {
-    val board : Board = Board(0,0,"","",0,0F,0F,"", "", "", 0, 0, 0, "null", "", "")
+    val board : Board = Board(0,0,"","",0,0F,0F,"", "", "", 0, 0, 0, "null", "")
     val REQUEST_IMAGE_CAPTURE = 1
     val REQUEST_ALBUM = 2
     lateinit var curPhotoPath : String
@@ -85,6 +85,8 @@ class PostBoardActivity : AppCompatActivity() {
             board.picture = filename
             board.registerDate = SimpleDateFormat("yyyyMMdd").format(Date())
             board.deadLineDate = calculateDeadLine(board.registerDate, 5)
+            board.locationX = MyData.getMember().locationX
+            board.locationY = MyData.getMember().locationY
             Log.d("deadline", board.deadLineDate)
             //board.location
 
@@ -93,7 +95,7 @@ class PostBoardActivity : AppCompatActivity() {
             var retrofit = RetrofitClient.getInstance()
             var myApi = retrofit.create(RetrofitService::class.java)
 
-            myApi.boardPosting(board.price, board.title, board.text, board.categoryId, board.nickname, board.registerDate, board.deadLineDate, board.location, board.picture).enqueue(object : Callback<Board> {
+            myApi.boardPosting(board.price, board.title, board.text, board.categoryId, board.nickname, board.registerDate, board.deadLineDate, board.locationX, board.locationY, board.picture).enqueue(object : Callback<Board> {
                 override fun onResponse(call : Call<Board>, response: Response<Board>) {
                     response.body()?.let {
                         Log.d("result", it.id.toString())

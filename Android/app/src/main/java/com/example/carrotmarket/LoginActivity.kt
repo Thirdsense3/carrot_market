@@ -48,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<Member>, response: retrofit2.Response<Member>) {
                         response.body()?.let {
                             if(!it.email.toString().equals("error")) {
-                                val member = Member(it.email, it.password, it.name, it.location, it.nickname)
+                                val member = Member(it.email, it.password, it.name, it.locationX, it.locationY, it.nickname)
                                 textview.text = member.email + " " + member.password
 
                                 MyData.saveMyData(member)

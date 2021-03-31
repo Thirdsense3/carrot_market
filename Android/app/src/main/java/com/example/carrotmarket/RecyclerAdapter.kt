@@ -46,7 +46,9 @@ class RecyclerAdapter(private val context: Context, private val boardList: Mutab
             }
 
             boardTitle?.text = board.title
-            boardLocation?.text = board.location
+            // TODO
+            // locationX, locationY 변환 필요
+            //boardLocation?.text = board.location
             boardPrice?.text = board.price.toString()
 
             itemView.setOnClickListener{itemClick(board)}
