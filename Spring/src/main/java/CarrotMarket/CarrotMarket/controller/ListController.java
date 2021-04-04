@@ -29,6 +29,9 @@ public class ListController {
     @ResponseBody
     public List<Board> boardList(){
         List<Board> boardList = listService.getBoardList();
+        for(int i=0;i<boardList.size();i++){
+            System.out.println("test : " + boardList.get(i).getDeadlineDate());
+        }
         return boardList;
     }
 
