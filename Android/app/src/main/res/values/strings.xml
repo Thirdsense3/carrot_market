@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Carrot Market</string>
+    <string name="logout">logout</string>
 </resources>
