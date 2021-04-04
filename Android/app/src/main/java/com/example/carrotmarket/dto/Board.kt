@@ -1,8 +1,5 @@
 package com.example.carrotmarket.dto
 
-import android.graphics.Bitmap
-import okhttp3.MultipartBody
-
 data class Board (
     var id : Long,
     var price : Long,
@@ -13,11 +10,9 @@ data class Board (
     var locationY : Float,
     var nickname : String,
     var registerDate : String,
-    var deadLineDate : String,
+    var deadLineDate : String?,
     var dibsCnt : Int,
     var viewCnt : Int,
     var chatCnt : Int,
     var picture : String,
-    var photo : String
-    //picture
 )
