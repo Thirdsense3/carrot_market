@@ -19,7 +19,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class BoardActivity: AppCompatActivity() {
+class ListActivity: AppCompatActivity() {
     private val TAG = "BoardActivity"
     var boardlist = mutableListOf<Board>(
             Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
@@ -44,12 +44,12 @@ class BoardActivity: AppCompatActivity() {
         CoroutineScope(IO).launch {
 
             withContext(Main){
-                val boardAdapter = RecyclerAdapter(this@BoardActivity,boardlist){
+                val boardAdapter = RecyclerAdapter(this@ListActivity,boardlist){
                     TODO("게시물 클릭시 처리")
                 }
                 boardRecyclerView.adapter = boardAdapter
 
-                val lm = LinearLayoutManager(this@BoardActivity)
+                val lm = LinearLayoutManager(this@ListActivity)
                 boardRecyclerView.layoutManager = lm
                 boardRecyclerView.setHasFixedSize(true)
             }
