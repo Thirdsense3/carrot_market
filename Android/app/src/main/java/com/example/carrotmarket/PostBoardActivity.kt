@@ -14,9 +14,6 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.content.FileProvider
-import androidx.core.net.toFile
-import androidx.core.net.toUri
-import androidx.core.view.get
 import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.dto.MyData
 import com.example.carrotmarket.network.RetrofitClient
@@ -33,12 +30,11 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
-import java.security.Permission
 import java.text.SimpleDateFormat
 import java.util.*
 
 class PostBoardActivity : AppCompatActivity() {
-    val board : Board = Board(0,0,"","",0,0F,0F,"", "", "", 0, 0, 0, "null", "")
+    val board : Board = Board(0,0,"","",0,0F,0F,"", "", "", 0, 0, 0, "null")
     val REQUEST_IMAGE_CAPTURE = 1
     val REQUEST_ALBUM = 2
     lateinit var curPhotoPath : String
@@ -95,7 +91,7 @@ class PostBoardActivity : AppCompatActivity() {
             var retrofit = RetrofitClient.getInstance()
             var myApi = retrofit.create(RetrofitService::class.java)
 
-            myApi.boardPosting(board.price, board.title, board.text, board.categoryId, board.nickname, board.registerDate, board.deadLineDate, board.locationX, board.locationY, board.picture).enqueue(object : Callback<Board> {
+            myApi.boardPosting(board.price, board.title, board.text, board.categoryId, board.nickname, board.registerDate, board.deadLineDate!!, board.locationX, board.locationY, board.picture).enqueue(object : Callback<Board> {
                 override fun onResponse(call : Call<Board>, response: Response<Board>) {
                     response.body()?.let {
                         Log.d("result", it.id.toString())
