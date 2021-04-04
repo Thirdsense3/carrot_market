@@ -1,5 +1,5 @@
 package CarrotMarket.CarrotMarket.controller;
-
+/*
 import CarrotMarket.CarrotMarket.constants.KafkaConstants;
 import CarrotMarket.CarrotMarket.domain.Message;
 import lombok.extern.slf4j.Slf4j;
@@ -37,3 +37,4 @@ public class ChatController {
         return message;
     }
 }
+*/

@@ -1,5 +1,5 @@
 package CarrotMarket.CarrotMarket.configuration;
-
+/*
 import CarrotMarket.CarrotMarket.constants.KafkaConstants;
 import CarrotMarket.CarrotMarket.domain.Message;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -38,3 +38,4 @@ public class ProducerConfiguration {
         return new KafkaTemplate<>(producerFactory());
     }
 }
+*/

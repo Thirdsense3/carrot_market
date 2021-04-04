@@ -1,5 +1,5 @@
 package CarrotMarket.CarrotMarket.configuration;
-
+/*
 import CarrotMarket.CarrotMarket.constants.KafkaConstants;
 import CarrotMarket.CarrotMarket.domain.Message;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -27,11 +27,11 @@ public class ListenerConfiguration {
 
     @Bean
     public ConsumerFactory<String ,Message> consumerFactory(){
-        return new DefaultKafkaConsumerFactory<>(consumerConfiguraions(),new StringDeserializer(), new JsonDeserializer<>(Message.class));
+        return new DefaultKafkaConsumerFactory<>(consumerConfigurations(),new StringDeserializer(), new JsonDeserializer<>(Message.class));
     }
 
     @Bean
-    public Map<String,Object> consumerConfiguraions(){
+    public Map<String,Object> consumerConfigurations(){
         Map<String , Object> configurations = new HashMap<>();
         configurations.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConstants.KAFKA_BROKER);
         configurations.put(ConsumerConfig.GROUP_ID_CONFIG,KafkaConstants.GROUP_ID);
@@ -39,5 +39,4 @@ public class ListenerConfiguration {
         configurations.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         configurations.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         return configurations;
-    }
-}
+    }*/

@@ -1,5 +1,5 @@
 package CarrotMarket.CarrotMarket.consumer;
-
+/*
 import CarrotMarket.CarrotMarket.constants.KafkaConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,3 +25,4 @@ public class MessageListener {
         template.convertAndSend("/topic/group", message);
     }
 }
+*/

@@ -1,5 +1,5 @@
 package CarrotMarket.CarrotMarket.configuration;
-
+/*
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -20,3 +20,4 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         registry.enableSimpleBroker("/topic/");
     }
 }
+*/
