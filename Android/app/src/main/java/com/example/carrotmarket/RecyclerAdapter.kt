@@ -32,14 +32,14 @@ class RecyclerAdapter(private val context: Context, private val boardList: Mutab
     inner class Holder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         private val boardPhoto = itemView?.findViewById<ImageView>(R.id.boardPhotoImg)
         private val boardTitle = itemView?.findViewById<TextView>(R.id.boardName)
-        private val boardLocation = itemView?.findViewById<TextView>(R.id.boardLocation)
+        private val boardLocationX = itemView?.findViewById<TextView>(R.id.boardLocation)
         private val boardPrice = itemView?.findViewById<TextView>(R.id.boardPrice)
 
         fun bind(board: Board, context: Context) {
             /* dogPhoto의 setImageResource에 들어갈 이미지의 id를 파일명(String)으로 찾고,
           이미지가 없는 경우 안드로이드 기본 아이콘을 표시한다.*/
-            if (board.photo != "") {
-                val resourceId = context.resources.getIdentifier(board.photo, "drawable", context.packageName)
+            if (board.picture != "") {
+                val resourceId = context.resources.getIdentifier(board.picture, "drawable", context.packageName)
                 boardPhoto?.setImageResource(resourceId)
             } else{
                 boardPhoto?.setImageResource(R.mipmap.ic_launcher)
@@ -48,8 +48,8 @@ class RecyclerAdapter(private val context: Context, private val boardList: Mutab
             boardTitle?.text = board.title
             // TODO
             // locationX, locationY 변환 필요
-            //boardLocation?.text = board.location
-            boardPrice?.text = board.price.toString()
+            boardLocationX?.text = board.locationX.toString()
+            boardPrice?.text = board.price.toString() + "원"
 
             itemView.setOnClickListener{itemClick(board)}
         }
