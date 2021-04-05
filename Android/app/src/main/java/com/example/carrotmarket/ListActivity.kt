@@ -22,13 +22,13 @@ import retrofit2.Response
 class ListActivity: AppCompatActivity() {
     private val TAG = "BoardActivity"
     var boardlist = mutableListOf<Board>(
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot")
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"")
     )
     val url = "http://10.0.2.2:8080/login"
     private val retrofit = RetrofitClient.getInstance()
@@ -45,7 +45,12 @@ class ListActivity: AppCompatActivity() {
 
             withContext(Main){
                 val boardAdapter = RecyclerAdapter(this@ListActivity,boardlist){
-                    TODO("게시물 클릭시 처리")
+                    val intent = Intent(this@ListActivity,BoardActivity::class.java)
+                    /**
+                     * id를 string으로 변환후 넘김
+                     * */
+                    intent.putExtra(it.id.toString(),it.title)
+                    startActivity(intent)
                 }
                 boardRecyclerView.adapter = boardAdapter
 
