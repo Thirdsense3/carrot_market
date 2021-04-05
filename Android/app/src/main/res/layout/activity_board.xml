@@ -15,6 +15,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/carrot" />
 
+    <ImageView
+        android:id="@+id/profile"
+        android:layout_width="46dp"
+        android:layout_height="42dp"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="328dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
     <TextView
         android:id="@+id/boardNickName"
         android:layout_width="wrap_content"
@@ -31,42 +39,37 @@
         android:layout_marginTop="2dp"
         android:layout_marginLeft="5dp"
         android:text="주소"
+        android:textSize="10sp"
         app:layout_constraintStart_toEndOf="@+id/profile"
         app:layout_constraintTop_toBottomOf="@+id/boardNickName" />
+
     <TextView
         android:id="@+id/boardTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
+        android:layout_marginTop="30dp"
         android:text="제목"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="400dp" />
-
-    <ImageView
-        android:id="@+id/profile"
-        android:layout_width="46dp"
-        android:layout_height="42dp"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="328dp"
-        tools:srcCompat="@tools:sample/avatars" />
-
-
+        app:layout_constraintTop_toBottomOf="@+id/profile" />
 
     <TextView
         android:id="@+id/boardContents"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:text="내용"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/boardTitle" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/boardOtherCnt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="채팅n 관심n 조회n"
+        android:textSize="10sp"
         tools:layout_editor_absoluteX="13dp"
         tools:layout_editor_absoluteY="509dp" />
 
