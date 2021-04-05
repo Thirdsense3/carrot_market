@@ -59,4 +59,7 @@ interface RetrofitService {
 
     @GET("board/list")
     fun boardList() : Call<List<Board>>
+
+    @GET("board/list/{id}")
+    fun getBoard(@Path("id") id: Long?): Call<Board>
 }
