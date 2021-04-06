@@ -20,7 +20,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ListActivity: AppCompatActivity() {
-    private val TAG = "BoardActivity"
+    private val TAG = "ListActivity"
     var boardlist = mutableListOf<Board>(
             Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
             Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
