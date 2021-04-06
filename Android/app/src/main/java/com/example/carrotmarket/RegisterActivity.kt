@@ -103,6 +103,16 @@ class RegisterActivity : AppCompatActivity() {
                 // TODO locationX, locationY 설정
                 // val location = findViewById<EditText>(R.id.locationEditText).text.toString()
 
+
+//                locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+//                val userLocation: Location = getLatLng()
+//
+//                /**uesrLocation은 절대 null 불가*/
+//
+//                latitude = userLocation.latitude
+//                Log.d(TAG,"현재 내 위치 값: $latitude, $longitude")
+
+
                 // 임시로 초기값 넣어줬음
                 register(email, pw, name, nn, 0F, 0F)
             } else {
@@ -294,12 +304,20 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun getLatLng() : Location{
         var currentLatLng : Location? = null
+
         if(ActivityCompat.checkSelfPermission(applicationContext,android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(applicationContext,android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),this.REQUEST_CODE_LOCATION)
             getLatLng()
         } else{
             val locationProvider = LocationManager.GPS_PROVIDER
             currentLatLng = locationManager?.getLastKnownLocation(locationProvider)
+            Log.d(TAG, "currentLatLng : $currentLatLng")
+        }
+
+        if(currentLatLng != null){
+            Log.d(TAG, "currentLatLng : $currentLatLng")
+
+            return currentLatLng!!
         }
 
         return currentLatLng!!
