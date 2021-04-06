@@ -24,6 +24,8 @@ public class ListService {
         if(board.isPresent()){
             int viewCnt = board.get().getViewCnt();
             board.get().setViewCnt(viewCnt+1);
+            System.out.println(board.get().getId());
+            System.out.println(board.get().getTitle());
             return board;
         }
         else{
