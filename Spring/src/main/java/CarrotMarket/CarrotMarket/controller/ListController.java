@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,8 @@ public class ListController {
 
     @RequestMapping(value = "/board/list/{id}",method = RequestMethod.GET)
     @ResponseBody
-    public Optional<Board> getBoard(@PathVariable int id, Optional<Board> board){
+    public Optional<Board> getBoard(@PathVariable Long id){
+        Optional<Board> board = listService.getBoard(id);
         return board;
     }
 }
