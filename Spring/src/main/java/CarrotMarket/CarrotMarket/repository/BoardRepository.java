@@ -14,4 +14,5 @@ public interface BoardRepository {
     List<Board> loadByTitle(String title);
     List<Board> loadByNickname(String nickname);
     Optional<Board> findById(Long id);
+    Board deleteById(Board board);
 }

@@ -75,4 +75,10 @@ public class MemoryBoardRepository implements BoardRepository{
     public Optional<Board> findById(Long id) {
         return Optional.ofNullable(store.get(id));
     }
+
+    @Override
+    public Board deleteById(Board board) {
+        System.out.println("MemoryBoardRepository deleteById():" + board.getId());
+        return board;
+    }
 }

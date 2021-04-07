@@ -53,4 +53,8 @@ public class BoardService {
     public Optional<Board> findPostById(Long id) {
         return boardRepository.findById(id);
     }
+
+    public Board deleteById(Board board) {
+        return boardRepository.deleteById(board);
+    }
 }

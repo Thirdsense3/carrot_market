@@ -100,4 +100,12 @@ public class BoardController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + board.getPicture() + "\"")
                 .body(resource);
     }
+
+    @PostMapping("/board/delete")
+    @ResponseBody
+    public Board DeleteBoard(Board board) {
+        System.out.println("/board/delete:" + board.getId());
+        Board boardDeleted = boardService.deleteById(board);
+        return board;
+    }
 }

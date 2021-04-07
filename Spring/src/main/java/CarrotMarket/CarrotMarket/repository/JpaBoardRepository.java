@@ -1,6 +1,7 @@
 package CarrotMarket.CarrotMarket.repository;
 
 import CarrotMarket.CarrotMarket.domain.Board;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -67,5 +68,13 @@ public class JpaBoardRepository implements BoardRepository{
     @Override
     public Optional<Board> findById(Long id) {
         return Optional.ofNullable(em.find(Board.class, id));
+    }
+
+    @Transactional
+    @Override
+    public Board deleteById(Board board) {
+        em.createQuery("DELETE FROM Board b WHERE b.id = :id").setParameter("id", board.getId()).executeUpdate();
+        System.out.println("JpaBoardRepository deleteById(): " + board.getId());
+        return board;
     }
 }

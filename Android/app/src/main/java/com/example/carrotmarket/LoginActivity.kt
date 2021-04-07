@@ -27,8 +27,8 @@ class LoginActivity : AppCompatActivity() {
         // testing response
         val textview = findViewById<TextView>(R.id.textview)
         val autoLogin = findViewById<CheckBox>(R.id.autoLogin)
-        val intent = Intent(this, ListActivity::class.java)
-
+//        val intent = Intent(this, ListActivity::class.java)
+        val intent = Intent(this, MenuTestActivity::class.java)
 
         val check = AccountSharedPreferences.getUserData(this)
         if(check.email != "") {

@@ -52,6 +52,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MenuTestActivity"></activity>
+        <activity android:name=".DeleteTestActivity"></activity>
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"

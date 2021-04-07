@@ -50,11 +50,11 @@ public class Board {
     }
     //private String picture;
 
-    /*public int getId() {
-        return id;
+    public Long getId() {
+        return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -90,13 +90,13 @@ public class Board {
         this.categoryId = categoryId;
     }
 
-    public String getLocation() {
-        return location;
+    /*public String getLocation() {
+        return this.location;
     }
 
     public void setLocation(String location) {
         this.location = location;
-    }
+    }*/
 
     public String getNickname() {
         return nickname;
@@ -144,5 +144,5 @@ public class Board {
 
     public void setChatCnt(int chatCnt) {
         this.chatCnt = chatCnt;
-    }*/
+    }
 }
