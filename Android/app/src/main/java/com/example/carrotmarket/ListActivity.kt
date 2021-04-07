@@ -39,6 +39,7 @@ class ListActivity: AppCompatActivity() {
         setContentView(R.layout.activity_boardlist)
 
         val logoutButton = findViewById<Button>(R.id.logoutButton)
+        val postButton = findViewById<Button>(R.id.PostButton)
         getBoardList()
 
         CoroutineScope(IO).launch {
@@ -60,6 +61,11 @@ class ListActivity: AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
+
+        postButton.setOnClickListener() {
+            val intent = Intent(this, PostBoardActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun getBoardList(){
@@ -72,7 +78,7 @@ class ListActivity: AppCompatActivity() {
                 response.body()?.let {
                     for (item in it){
 
-                        val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.locationX,item.locationY,item.nickname,item.registerDate,item.deadLineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.picture)
+                        val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.locationX,item.locationY,item.nickname,item.registerDate,item.deadlineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.picture)
                         item.picture = "carrot"
 
                         Log.d(TAG, "item : ${item.id}")
@@ -84,7 +90,7 @@ class ListActivity: AppCompatActivity() {
                         Log.d(TAG, "item : ${item.locationY}")
                         Log.d(TAG, "item : ${item.nickname}")
                         Log.d(TAG, "item : ${item.registerDate}")
-                        Log.d(TAG, "item : ${item.deadLineDate}")
+                        Log.d(TAG, "item : ${item.deadlineDate}")
                         Log.d(TAG, "item : ${item.dibsCnt}")
                         Log.d(TAG, "item : ${item.picture}")
 

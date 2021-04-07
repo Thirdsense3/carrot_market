@@ -39,8 +39,11 @@ class PostBoardActivity : AppCompatActivity() {
     val REQUEST_ALBUM = 2
     lateinit var curPhotoPath : String
     lateinit var image : ImageView
+    var images = ArrayList<MultipartBody.Part>()
     var imageFile : File? = null
     lateinit var filename : String
+    var cntImage : Int = 0
+    var pictures = ""
 
     var categoryData = arrayOf("1", "2", "3", "4", "5", "6")
 
@@ -80,39 +83,63 @@ class PostBoardActivity : AppCompatActivity() {
             board.nickname = MyData.getMember().nickname
             board.picture = filename
             board.registerDate = SimpleDateFormat("yyyyMMdd").format(Date())
-            board.deadLineDate = calculateDeadLine(board.registerDate, 5)
+            board.deadlineDate = calculateDeadLine(board.registerDate, 5)
             board.locationX = MyData.getMember().locationX
             board.locationY = MyData.getMember().locationY
-            Log.d("deadline", board.deadLineDate)
+            board.picture = pictures
+
+            Log.d("deadline", board.deadlineDate)
             //board.location
 
-            var requestBody : RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
-            var body : MultipartBody.Part = MultipartBody.Part.createFormData("imageFile", filename, requestBody)
+            var reqbody : RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
+            var body : MultipartBody.Part = MultipartBody.Part.createFormData("imageFile", filename, reqbody)
             var retrofit = RetrofitClient.getInstance()
             var myApi = retrofit.create(RetrofitService::class.java)
+            val intent = Intent(this, ListActivity::class.java)
+            var tempId : Long
 
-            myApi.boardPosting(board.price, board.title, board.text, board.categoryId, board.nickname, board.registerDate, board.deadLineDate!!, board.locationX, board.locationY, board.picture).enqueue(object : Callback<Board> {
+            /*images.forEach { it ->
+                board.picture += it.toString() + " ";
+            }*/
+
+            myApi.boardPosting(board.price, board.title, board.text, board.categoryId, board.nickname, board.registerDate, board.deadlineDate!!, board.locationX, board.locationY, board.picture).enqueue(object : Callback<Board> {
                 override fun onResponse(call : Call<Board>, response: Response<Board>) {
                     response.body()?.let {
                         Log.d("result", it.id.toString())
+                        tempId = it.id
+
+                        myApi.postPicture(tempId, images).enqueue(object : Callback<String> {
+                            override fun onResponse(call: Call<String>, response: Response<String>) {
+                                if (response?.isSuccessful) {
+                                    Log.d("FILE : ", imageFile.toString())
+                                    Toast.makeText(this@PostBoardActivity, "File Uploaded Successfully", Toast.LENGTH_LONG).show()
+                                    startActivity(intent)
+                                } else {
+                                    Log.d("result", "fail");
+                                    Toast.makeText(this@PostBoardActivity, "Fail", Toast.LENGTH_LONG).show()
+                                }
+                            }
+
+                            override fun onFailure(call: Call<String>, t: Throwable) {
+                                Log.d("FILE : ", imageFile.toString())
+                                Log.d("FAIL", t.message);
+                                Toast.makeText(this@PostBoardActivity, "완전 Fail", Toast.LENGTH_LONG).show()
+                            }
+                        })
                     }
-                   /*if(response?.isSuccessful) {
-                       Log.d("posting", "success")
-                   } else {
-                       Log.d("posting", "fail")
-                   }*/
                 }
                 override fun onFailure(call : Call<Board>, t:Throwable) {
                     Log.d("absolute fail", t.message)
                 }
             })
 
-            myApi.postPicture(body).enqueue(object : Callback<String> {
+            /*myApi.postPicture(tempId, body).enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response?.isSuccessful) {
                         Log.d("FILE : ", imageFile.toString())
                         Log.d("Hello world", response.toString());
                         Toast.makeText(this@PostBoardActivity, "File Uploaded Successfully", Toast.LENGTH_LONG).show()
+                        startActivity(intent)
                     } else {
                         Log.d("Hello world", "fail");
                         Toast.makeText(this@PostBoardActivity, "Fail", Toast.LENGTH_LONG).show()
@@ -124,7 +151,7 @@ class PostBoardActivity : AppCompatActivity() {
                     Log.d("FAIL", t.message);
                     Toast.makeText(this@PostBoardActivity, "완전 Fail", Toast.LENGTH_LONG).show()
                 }
-            })
+            })*/
         }
     }
 
@@ -216,6 +243,10 @@ class PostBoardActivity : AppCompatActivity() {
             val bitmap : Bitmap
             val file = File(curPhotoPath)
             imageFile = file
+            pictures += filename + " ";
+            ++cntImage
+            var requestBody : RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+            images.add(MultipartBody.Part.createFormData("imageFile", filename, requestBody))
 
             if(Build.VERSION.SDK_INT < 28) {
                 bitmap = MediaStore.Images.Media.getBitmap(contentResolver, Uri.fromFile(file))
@@ -243,6 +274,9 @@ class PostBoardActivity : AppCompatActivity() {
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectImage)
                 image.setImageBitmap(bitmap)
                 imageFile = File(cur)
+                pictures += filename + " ";
+                var requestBody : RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), File(cur))
+                images.add(MultipartBody.Part.createFormData("imageFile", filename, requestBody))
             } catch (e:Exception) {
                 Toast.makeText(this@PostBoardActivity, "이미지 불러오기 실패", Toast.LENGTH_LONG).show()
             }
