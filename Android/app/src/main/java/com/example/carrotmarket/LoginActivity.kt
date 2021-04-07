@@ -3,10 +3,7 @@ package com.example.carrotmarket
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
 import com.example.carrotmarket.dto.AccountSharedPreferences
 import com.example.carrotmarket.dto.Member
 import com.example.carrotmarket.dto.MyData
@@ -16,6 +13,9 @@ import retrofit2.Call
 import retrofit2.Callback
 
 class LoginActivity : AppCompatActivity() {
+
+    var backPressedTime : Long = 0;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -33,6 +33,9 @@ class LoginActivity : AppCompatActivity() {
         val check = AccountSharedPreferences.getUserData(this)
         if(check.email != "") {
             MyData.saveMyData(check)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
 
@@ -55,6 +58,9 @@ class LoginActivity : AppCompatActivity() {
 
                                 if(autoLogin.isChecked())
                                     AccountSharedPreferences.setUserData(this@LoginActivity, member)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 startActivity(intent)
                             }
                             else {
@@ -73,6 +79,26 @@ class LoginActivity : AppCompatActivity() {
         joinButton.setOnClickListener() {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    override fun onBackPressed() {
+        // super.onBackPressed()
+        var tempTime : Long = System.currentTimeMillis()
+        var intervalTime : Long = tempTime - backPressedTime
+        val toast = Toast.makeText(this@LoginActivity,"한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT)
+
+        if(System.currentTimeMillis() > backPressedTime + 2000) {
+            backPressedTime = System.currentTimeMillis()
+            toast.show()
+            return
+        }
+
+        if(System.currentTimeMillis() <= backPressedTime + 2000) {
+            finishAffinity()
+            toast.cancel()
+            System.runFinalization()
+            System.exit(0)
         }
     }
 }
