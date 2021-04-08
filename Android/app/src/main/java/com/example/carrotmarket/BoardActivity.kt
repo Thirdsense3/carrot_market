@@ -22,6 +22,7 @@ class BoardActivity: AppCompatActivity() {
     private val retrofit = RetrofitClient.getInstance()
     private val myAPI: RetrofitService = retrofit.create(RetrofitService::class.java)
     private val TAG = "BoardActivity"
+    lateinit var board: Board
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,9 +31,6 @@ class BoardActivity: AppCompatActivity() {
 
         val toolbar:Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-
-        lateinit var board: Board
 
         if (intent.hasExtra("board")) {
             val boardId = intent.extras?.getLong("board")
@@ -56,11 +54,11 @@ class BoardActivity: AppCompatActivity() {
                         Log.d(TAG, "item : ${it.locationY}")
                         Log.d(TAG, "item : ${it.nickname}")
                         Log.d(TAG, "item : ${it.registerDate}")
-                        Log.d(TAG, "item : ${it.deadLineDate}")
+                        Log.d(TAG, "item : ${it.deadlineDate}")
                         Log.d(TAG, "item : ${it.dibsCnt}")
                         Log.d(TAG, "item : ${it.picture}")
 
-                        board = Board(it.id, it.price, it.title, it.text, it.categoryId, it.locationX, it.locationY, it.nickname, it.registerDate, it.deadLineDate, it.dibsCnt, it.viewCnt, it.chatCnt, it.picture)
+                        board = Board(it.id, it.price, it.title, it.text, it.categoryId, it.locationX, it.locationY, it.nickname, it.registerDate, it.deadlineDate, it.dibsCnt, it.viewCnt, it.chatCnt, it.picture)
 
                     }
 
@@ -107,7 +105,22 @@ class BoardActivity: AppCompatActivity() {
         //return super.onOptionsItemSelected(item)
         return when(item.itemId){
             R.id.boardDelete -> {
-                Toast.makeText(this,"삭제하기 클릭",Toast.LENGTH_SHORT).show()
+                myAPI.deleteBoard(board.id).enqueue(object : Callback<Board> {
+                    override fun onResponse(call: Call<Board>, response: Response<Board>) {
+                        if (response?.isSuccessful) {
+                            Log.d("DeleteTestActivity", response.toString())
+                            Log.d("DeleteTestActivity", call.toString())
+                        } else {
+                            Log.d("DeleteTestActivity", "fail")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Board>, t: Throwable) {
+                        Log.d("FILE : ", call.toString())
+                        Log.d("FAIL", t.message)
+                    }
+                })
+                Toast.makeText(this,"삭제되었습니다.",Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.boardEdit -> {
@@ -133,7 +146,7 @@ class BoardActivity: AppCompatActivity() {
 
             override fun onResponse(call: Call<Board>, response: Response<Board>) {
                 response.body()?.let {
-                    board = Board(it.id, it.price, it.title, it.text, it.categoryId, it.locationX, it.locationY, it.nickname, it.registerDate, it.deadLineDate, it.dibsCnt, it.viewCnt, it.chatCnt, it.picture)
+                    board = Board(it.id, it.price, it.title, it.text, it.categoryId, it.locationX, it.locationY, it.nickname, it.registerDate, it.deadlineDate, it.dibsCnt, it.viewCnt, it.chatCnt, it.picture)
                 }
             }
 
