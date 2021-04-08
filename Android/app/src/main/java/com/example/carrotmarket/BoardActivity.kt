@@ -1,6 +1,7 @@
 package com.example.carrotmarket
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -105,22 +106,29 @@ class BoardActivity: AppCompatActivity() {
         //return super.onOptionsItemSelected(item)
         return when(item.itemId){
             R.id.boardDelete -> {
-                myAPI.deleteBoard(board.id).enqueue(object : Callback<Board> {
-                    override fun onResponse(call: Call<Board>, response: Response<Board>) {
+                myAPI.deleteBoard(board.id).enqueue(object : Callback<String> {
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
                         if (response?.isSuccessful) {
-                            Log.d("DeleteTestActivity", response.toString())
-                            Log.d("DeleteTestActivity", call.toString())
+                            Log.d("BoardActivity", response.toString())
+                            Log.d("BoardActivity", call.toString())
+
+                            Toast.makeText(this@BoardActivity,"삭제되었습니다.",Toast.LENGTH_SHORT).show()
+
+                            val intent = Intent(this@BoardActivity, ListActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
                         } else {
-                            Log.d("DeleteTestActivity", "fail")
+                            Log.d("BoardActivity", "fail")
                         }
                     }
 
-                    override fun onFailure(call: Call<Board>, t: Throwable) {
+                    override fun onFailure(call: Call<String>, t: Throwable) {
                         Log.d("FILE : ", call.toString())
                         Log.d("FAIL", t.message)
                     }
                 })
-                Toast.makeText(this,"삭제되었습니다.",Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.boardEdit -> {
