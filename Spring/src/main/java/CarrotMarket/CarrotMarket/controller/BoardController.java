@@ -15,8 +15,11 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
@@ -94,9 +97,31 @@ public class BoardController {
             file.mkdir();
         }
         //imageFile.transferTo(new File(baseDir + imageFile.getOriginalFilename() + ".jpg"));
+        int cnt = 0;
         for(var i : imageFile) {
             System.out.println("이미지 업로드 : " + i.getOriginalFilename());
             i.transferTo(new File(baseDir + i.getOriginalFilename()));
+
+            if(cnt == 0) {
+                try {
+                    int newWidth = 200;
+                    int newHeight = 200;
+
+                    Image image = ImageIO.read(new File(baseDir + i.getOriginalFilename()));
+                    Image previewImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_FAST);
+
+                    BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+                    Graphics g = newImage.getGraphics();
+                    g.drawImage(previewImage, 0, 0, null);
+                    g.dispose();
+                    ImageIO.write(newImage, "jpg", new File(baseDir + "previewImage"));
+                    System.out.println("변환성공");
+                } catch (Exception e) {
+                    System.out.println("변환실패 : " + e.toString());
+                }
+            }
+
+            cnt++;
         }
         System.out.println("picture Upload");
         return "success";
@@ -110,6 +135,17 @@ public class BoardController {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename)
+                .body(resource);
+    }
+    
+    @GetMapping("/download/{id}/preview")
+    public ResponseEntity<Resource> previewImageDownload(@PathVariable("id") Long id) throws IOException {
+        String baseDir = "C:\\images\\";
+        Path path = Paths.get(baseDir + id + "\\previewImage");
+        Resource resource = new InputStreamResource(Files.newInputStream(path));
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "preview")
                 .body(resource);
     }
 }
