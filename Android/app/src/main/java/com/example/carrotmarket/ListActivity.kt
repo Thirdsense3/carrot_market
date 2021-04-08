@@ -20,17 +20,16 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ListActivity: AppCompatActivity() {
-    private val TAG = "BoardActivity"
+    private val TAG = "ListActivity"
     var boardlist = mutableListOf<Board>(
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot"),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"carrot")
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"")
     )
-    val url = "http://10.0.2.2:8080/login"
     private val retrofit = RetrofitClient.getInstance()
     private val myAPI: RetrofitService = retrofit.create(RetrofitService::class.java)
 
@@ -45,7 +44,12 @@ class ListActivity: AppCompatActivity() {
 
             withContext(Main){
                 val boardAdapter = RecyclerAdapter(this@ListActivity,boardlist){
-                    TODO("게시물 클릭시 처리")
+                    val intent = Intent(this@ListActivity,BoardActivity::class.java)
+                    /**
+                     * id를 string으로 변환후 넘김
+                     * */
+                    intent.putExtra("board",it.id)
+                    startActivity(intent)
                 }
                 boardRecyclerView.adapter = boardAdapter
 
@@ -71,10 +75,6 @@ class ListActivity: AppCompatActivity() {
             override fun onResponse(call: Call<List<Board>>, response: Response<List<Board>>) {
                 response.body()?.let {
                     for (item in it){
-
-                        val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.locationX,item.locationY,item.nickname,item.registerDate,item.deadLineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.picture)
-                        item.picture = "carrot"
-
                         Log.d(TAG, "item : ${item.id}")
                         Log.d(TAG, "item : ${item.price}")
                         Log.d(TAG, "item : ${item.title}")
@@ -87,6 +87,9 @@ class ListActivity: AppCompatActivity() {
                         Log.d(TAG, "item : ${item.deadLineDate}")
                         Log.d(TAG, "item : ${item.dibsCnt}")
                         Log.d(TAG, "item : ${item.picture}")
+
+                        val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.locationX,item.locationY,item.nickname,item.registerDate,item.deadLineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.picture)
+                        item.picture = "carrot"
 
                         boardlist.add(board)
                     }

@@ -63,4 +63,7 @@ interface RetrofitService {
     @POST("board/delete")
     @FormUrlEncoded
     fun deleteBoard(@Field("id") id: Long) : Call<Board>
+
+    @GET("board/list/{id}")
+    fun getBoard(@Path("id") id: Long?): Call<Board>
 }
