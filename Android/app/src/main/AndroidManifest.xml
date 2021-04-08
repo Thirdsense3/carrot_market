@@ -57,5 +57,7 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="d97fc6594ad652340a91ce6716edf097"/>
         <activity android:name=".VerifyingEmailActivity" />
+        <activity android:name=".BoardActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 </manifest>

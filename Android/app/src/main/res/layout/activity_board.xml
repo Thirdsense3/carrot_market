@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layoutDescription="@xml/activity_board_scene">
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/toolbar"
+        />
+
+    <ScrollView
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/boardProductPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:visibility="visible"
+                app:srcCompat="@drawable/carrot"
+                tools:srcCompat="@drawable/carrot"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    android:id="@+id/profile"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/carrot" />
+
+                <TextView
+                    android:id="@+id/boardNickName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="닉네임"
+                    android:textSize="20sp"
+                    app:layout_constraintLeft_toRightOf="@+id/profile"
+                    app:layout_constraintTop_toTopOf="@id/constraintLayout"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="3dp"/>
+
+                <TextView
+                    android:id="@+id/boardAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="주소"
+                    android:textSize="10sp"
+                    app:layout_constraintLeft_toRightOf="@+id/profile"
+                    app:layout_constraintTop_toBottomOf="@+id/boardNickName"
+                    android:layout_marginLeft="3dp"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/boardTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="30dp"
+                android:text="제목"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/boardContents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="20dp"
+                android:text="내용" />
+
+            <TextView
+                android:id="@+id/boardOtherCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="43dp"
+                android:text="채팅n 관심n 조회n"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 하단 고정-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/boardPrice"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:text="가격"/>
+
+        <Button
+            android:id="@+id/purchaseButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:text="구매하기" />
+
+    </LinearLayout>
+</LinearLayout>
