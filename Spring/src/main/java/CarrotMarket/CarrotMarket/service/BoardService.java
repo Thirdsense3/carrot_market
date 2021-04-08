@@ -54,7 +54,7 @@ public class BoardService {
         return boardRepository.findById(id);
     }
 
-    public Board deleteById(Board board) {
-        return boardRepository.deleteById(board);
+    public void deleteById(Board board) {
+        boardRepository.deleteById(board);
     }
 }

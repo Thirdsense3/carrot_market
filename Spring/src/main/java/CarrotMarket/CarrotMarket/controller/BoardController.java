@@ -103,9 +103,9 @@ public class BoardController {
 
     @PostMapping("/board/delete")
     @ResponseBody
-    public Board DeleteBoard(Board board) {
+    public String DeleteBoard(Board board) {
         System.out.println("/board/delete:" + board.getId());
-        Board boardDeleted = boardService.deleteById(board);
-        return board;
+        boardService.deleteById(board);
+        return "ok";
     }
 }

@@ -72,9 +72,8 @@ public class JpaBoardRepository implements BoardRepository{
 
     @Transactional
     @Override
-    public Board deleteById(Board board) {
+    public void deleteById(Board board) {
         em.createQuery("DELETE FROM Board b WHERE b.id = :id").setParameter("id", board.getId()).executeUpdate();
         System.out.println("JpaBoardRepository deleteById(): " + board.getId());
-        return board;
     }
 }
