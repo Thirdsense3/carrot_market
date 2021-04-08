@@ -10,7 +10,7 @@ data class Board (
     var locationY : Float,
     var nickname : String,
     var registerDate : String,
-    var deadLineDate : String?,
+    var deadlineDate : String?,
     var dibsCnt : Int,
     var viewCnt : Int,
     var chatCnt : Int,

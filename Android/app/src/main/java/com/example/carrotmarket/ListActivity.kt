@@ -3,6 +3,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.carrotmarket.dto.AccountSharedPreferences
@@ -20,6 +21,9 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ListActivity: AppCompatActivity() {
+
+    var backPressedTime : Long = 0;
+
     private val TAG = "ListActivity"
     var boardlist = mutableListOf<Board>(
             Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
@@ -38,6 +42,7 @@ class ListActivity: AppCompatActivity() {
         setContentView(R.layout.activity_boardlist)
 
         val logoutButton = findViewById<Button>(R.id.logoutButton)
+        val postButton = findViewById<Button>(R.id.PostButton)
         getBoardList()
 
         CoroutineScope(IO).launch {
@@ -62,7 +67,35 @@ class ListActivity: AppCompatActivity() {
         logoutButton.setOnClickListener {
             AccountSharedPreferences.deleteUserData(this)
             val intent = Intent(this, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+        }
+
+        postButton.setOnClickListener() {
+            val intent = Intent(this, PostBoardActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    override fun onBackPressed() {
+        // super.onBackPressed()
+        var tempTime : Long = System.currentTimeMillis()
+        var intervalTime : Long = tempTime - backPressedTime
+        val toast = Toast.makeText(this@ListActivity,"한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT)
+
+        if(System.currentTimeMillis() > backPressedTime + 2000) {
+            backPressedTime = System.currentTimeMillis()
+            toast.show()
+            return
+        }
+
+        if(System.currentTimeMillis() <= backPressedTime + 2000) {
+            finishAffinity()
+            toast.cancel()
+            System.runFinalization()
+            System.exit(0)
         }
     }
 
@@ -84,11 +117,11 @@ class ListActivity: AppCompatActivity() {
                         Log.d(TAG, "item : ${item.locationY}")
                         Log.d(TAG, "item : ${item.nickname}")
                         Log.d(TAG, "item : ${item.registerDate}")
-                        Log.d(TAG, "item : ${item.deadLineDate}")
+                        Log.d(TAG, "item : ${item.deadlineDate}")
                         Log.d(TAG, "item : ${item.dibsCnt}")
                         Log.d(TAG, "item : ${item.picture}")
 
-                        val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.locationX,item.locationY,item.nickname,item.registerDate,item.deadLineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.picture)
+                        val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.locationX,item.locationY,item.nickname,item.registerDate,item.deadlineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.picture)
                         item.picture = "carrot"
 
                         boardlist.add(board)

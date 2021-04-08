@@ -36,7 +36,9 @@ interface RetrofitService {
     @Multipart
     @POST("board/picture")
     fun postPicture(
-            @Part imageFile : MultipartBody.Part
+            @Part ("id") id : Long,
+            @Part imageFile : ArrayList<MultipartBody.Part>
+            //@Part imageFile : MultipartBody.Part
     ) : Call<String>
 
     @POST("board/posting")
