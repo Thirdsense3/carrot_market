@@ -2,16 +2,28 @@ package com.example.carrotmarket
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carrotmarket.dto.Board
+import com.example.carrotmarket.network.RetrofitClient
+import com.example.carrotmarket.network.RetrofitService
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.ByteArrayInputStream
 
 class RecyclerAdapter(private val context: Context, private val boardList: MutableList<Board>, val itemClick: (Board) -> Unit):RecyclerView.Adapter<RecyclerAdapter.Holder>(){
+
+    private val retrofit = RetrofitClient.getInstance()
+    private val myAPI: RetrofitService = retrofit.create(RetrofitService::class.java)
+    private val TAG = "RecyclerAdapter"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         /**화면을 최초 로딩하여 만들어진 View가 없는 경우, xml파일을 inflate하여 ViewHolder를 생성한다.**/
@@ -40,8 +52,24 @@ class RecyclerAdapter(private val context: Context, private val boardList: Mutab
             /* Photo의 setImageResource에 들어갈 이미지의 id를 파일명(String)으로 찾고,
           이미지가 없는 경우 안드로이드 기본 아이콘을 표시한다.*/
             if (board.picture != "") {
-                val resourceId = context.resources.getIdentifier(board.picture, "drawable", context.packageName)
-                boardPhoto?.setImageResource(resourceId)
+                /**val resourceId = context.resources.getIdentifier(board.picture, "drawable", context.packageName)*/
+                myAPI.getPreviewImage(board.id).enqueue(object : Callback<ResponseBody> {
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        Log.d(TAG, t.message)
+                        Log.d(TAG, "썸네일 연결 실패")
+                    }
+
+                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                        response.body()?.let {
+                            TODO("spring 에서 파일 보낼때 확장자명 jpg 붙여서 보내기")
+                            Log.d(TAG, "item : $it")
+                            val inputStream = it.byteStream()
+                            val bitmap = BitmapFactory.decodeStream(inputStream)
+                            boardPhoto?.setImageBitmap(bitmap)
+                        }
+                    }
+                } )
+
             } else{
                 boardPhoto?.setImageResource(R.drawable.carrot)
             }
