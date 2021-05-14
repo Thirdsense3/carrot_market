@@ -100,21 +100,21 @@ public class BoardController {
         int cnt = 0;
         for(var i : imageFile) {
             System.out.println("이미지 업로드 : " + i.getOriginalFilename());
-            i.transferTo(new File(baseDir + i.getOriginalFilename()));
+            i.transferTo(new File(baseDir + i.getOriginalFilename() + ".jpg"));
 
             if(cnt == 0) {
                 try {
                     int newWidth = 200;
                     int newHeight = 200;
 
-                    Image image = ImageIO.read(new File(baseDir + i.getOriginalFilename()));
+                    Image image = ImageIO.read(new File(baseDir + i.getOriginalFilename() + ".jpg"));
                     Image previewImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_FAST);
 
                     BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
                     Graphics g = newImage.getGraphics();
                     g.drawImage(previewImage, 0, 0, null);
                     g.dispose();
-                    ImageIO.write(newImage, "jpg", new File(baseDir + "previewImage"));
+                    ImageIO.write(newImage, "jpg", new File(baseDir + "previewImage.jpg"));
                     System.out.println("변환성공");
                 } catch (Exception e) {
                     System.out.println("변환실패 : " + e.toString());
@@ -130,22 +130,22 @@ public class BoardController {
     @GetMapping("/download/{id}/{filename}")
     public ResponseEntity<Resource> fileDownload(@PathVariable("id") Long id, @PathVariable("filename") String filename) throws IOException {
         String baseDir = "C:\\images\\";
-        Path path = Paths.get(baseDir + id + "\\" + filename);
+        Path path = Paths.get(baseDir + id + "\\" + filename + ".jpg");
         Resource resource = new InputStreamResource(Files.newInputStream(path));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + ".jpg")
                 .body(resource);
     }
     
     @GetMapping("/download/{id}/preview")
     public ResponseEntity<Resource> previewImageDownload(@PathVariable("id") Long id) throws IOException {
         String baseDir = "C:\\images\\";
-        Path path = Paths.get(baseDir + id + "\\previewImage");
+        Path path = Paths.get(baseDir + id + "\\previewImage.jpg");
         Resource resource = new InputStreamResource(Files.newInputStream(path));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "preview")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "preview.jpg")
                 .body(resource);
     }
 
