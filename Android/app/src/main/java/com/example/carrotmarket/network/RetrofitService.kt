@@ -1,9 +1,11 @@
 package com.example.carrotmarket.network
 
+import android.content.res.Resources
 import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.dto.CertificationCode
 import com.example.carrotmarket.dto.Member
 import okhttp3.MultipartBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -68,4 +70,7 @@ interface RetrofitService {
 
     @GET("board/list/{id}")
     fun getBoard(@Path("id") id: Long?): Call<Board>
+
+    @GET("download/{id}/preview")
+    fun getPreviewImage(@Path("id") id: Long?): Call<ResponseBody>
 }
