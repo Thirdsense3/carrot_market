@@ -27,12 +27,6 @@ class ListActivity: AppCompatActivity() {
     private val TAG = "ListActivity"
     var boardlist = mutableListOf<Board>(
             Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"")
     )
     private val retrofit = RetrofitClient.getInstance()
     private val myAPI: RetrofitService = retrofit.create(RetrofitService::class.java)
@@ -52,7 +46,8 @@ class ListActivity: AppCompatActivity() {
                     val intent = Intent(this@ListActivity,BoardActivity::class.java)
                     /**
                      * id를 string으로 변환후 넘김
-                     * */
+                     **/
+                    Log.d(TAG, it.id.toString())
                     intent.putExtra("board",it.id)
                     startActivity(intent)
                 }

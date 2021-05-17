@@ -61,7 +61,6 @@ class RecyclerAdapter(private val context: Context, private val boardList: Mutab
 
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                         response.body()?.let {
-                            TODO("spring 에서 파일 보낼때 확장자명 jpg 붙여서 보내기")
                             Log.d(TAG, "item : $it")
                             val inputStream = it.byteStream()
                             val bitmap = BitmapFactory.decodeStream(inputStream)
