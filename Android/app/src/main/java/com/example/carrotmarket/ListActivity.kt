@@ -11,11 +11,7 @@ import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.network.RetrofitClient
 import com.example.carrotmarket.network.RetrofitService
 import kotlinx.android.synthetic.main.activity_boardlist.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,9 +21,7 @@ class ListActivity: AppCompatActivity() {
     var backPressedTime : Long = 0;
 
     private val TAG = "ListActivity"
-    var boardlist = mutableListOf<Board>(
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-    )
+    var boardlist = mutableListOf<Board>()
     private val retrofit = RetrofitClient.getInstance()
     private val myAPI: RetrofitService = retrofit.create(RetrofitService::class.java)
 
@@ -37,26 +31,17 @@ class ListActivity: AppCompatActivity() {
 
         val logoutButton = findViewById<Button>(R.id.logoutButton)
         val postButton = findViewById<Button>(R.id.PostButton)
-        getBoardList()
 
-        CoroutineScope(IO).launch {
+        /**
+         * https://doitddo.tistory.com/84
+         * */
 
-            withContext(Main){
-                val boardAdapter = RecyclerAdapter(this@ListActivity,boardlist){
-                    val intent = Intent(this@ListActivity,BoardActivity::class.java)
-                    /**
-                     * id를 string으로 변환후 넘김
-                     **/
-                    Log.d(TAG, it.id.toString())
-                    intent.putExtra("board",it.id)
-                    startActivity(intent)
-                }
-                boardRecyclerView.adapter = boardAdapter
+        CoroutineScope(Dispatchers.Main).launch {
+            val loadBoard = CoroutineScope(Dispatchers.Main).async{
+                getAdapter()
+            }.await()
 
-                val lm = LinearLayoutManager(this@ListActivity)
-                boardRecyclerView.layoutManager = lm
-                boardRecyclerView.setHasFixedSize(true)
-            }
+            getBoardList()
         }
 
         logoutButton.setOnClickListener {
@@ -102,7 +87,9 @@ class ListActivity: AppCompatActivity() {
 
             override fun onResponse(call: Call<List<Board>>, response: Response<List<Board>>) {
                 response.body()?.let {
-                    for (item in it){
+
+                    for ((cnt, item) in it.withIndex()){
+                        Log.d(TAG, "item $cnt")
                         Log.d(TAG, "item : ${item.id}")
                         Log.d(TAG, "item : ${item.price}")
                         Log.d(TAG, "item : ${item.title}")
@@ -117,13 +104,27 @@ class ListActivity: AppCompatActivity() {
                         Log.d(TAG, "item : ${item.picture}")
 
                         val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.locationX,item.locationY,item.nickname,item.registerDate,item.deadlineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.picture)
-                        item.picture = "carrot"
 
                         boardlist.add(board)
                     }
                 }
             }
         })
+    }
+
+    private fun getAdapter(){
+        val boardAdapter = RecyclerAdapter(this@ListActivity,boardlist){
+            val intent = Intent(this@ListActivity,BoardActivity::class.java)
+            Log.d(TAG,"get Adapter -> ${it.id}")
+            intent.putExtra("board",it.id)
+            startActivity(intent)
+        }
+
+        boardRecyclerView.adapter = boardAdapter
+
+        val lm = LinearLayoutManager(this@ListActivity)
+        boardRecyclerView.layoutManager = lm
+        boardRecyclerView.setHasFixedSize(true)
     }
 
 }
