@@ -3,6 +3,8 @@ package CarrotMarket.CarrotMarket.service;
 import CarrotMarket.CarrotMarket.domain.Board;
 import CarrotMarket.CarrotMarket.repository.BoardRepository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +46,24 @@ public class BoardService {
         preBoard.setPrice(board.getPrice());
         boardRepository.save(preBoard);
         return preBoard;
+    }
+
+    public void deleteImages(Long id) {
+
+        File file = new File("C:\\images\\" + id);
+        File[] files = file.listFiles();
+        for(int i=0; i<files.length; i++) {
+            files[i].delete();
+        }
+        file.delete();
+    }
+
+    public void deleteImages(Long id, String[] filename) {
+
+        for(int i=0; i<filename.length; i++) {
+            File file = new File("C:\\images\\" + id + "\\" + filename[i] + ".jpg");
+            file.delete();
+        }
     }
 
     public List<Board> findMyBoard(String nickname) {

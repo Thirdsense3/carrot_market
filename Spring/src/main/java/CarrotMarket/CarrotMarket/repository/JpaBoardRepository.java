@@ -21,11 +21,12 @@ public class JpaBoardRepository implements BoardRepository{
         if(board.getId() == null) {
             em.persist(board);
         } else {
-            em.createQuery("update Board b set b.title = :title, b.text = :text, b.price = :price where b.id = :id")
+            em.createQuery("update Board b set b.title = :title, b.text = :text, b.price = :price, b.picture = :picture where b.id = :id")
                     .setParameter("title", board.getTitle())
                     .setParameter("text", board.getText())
                     .setParameter("price", board.getPrice())
                     .setParameter("id", board.getId())
+                    .setParameter("picture", board.getPicture())
                     .executeUpdate();
         }
         return board;
