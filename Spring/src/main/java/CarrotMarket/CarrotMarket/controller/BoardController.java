@@ -156,4 +156,11 @@ public class BoardController {
         boardService.deleteById(board);
         return "ok";
     }
+
+    @PostMapping("/board/search")
+    @ResponseBody
+    public List<Board> SearchBoard(String text) {
+        System.out.println("/board/search:" + text);
+        return boardService.searchBoard(text);
+    }
 }

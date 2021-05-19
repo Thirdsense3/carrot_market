@@ -13,6 +13,7 @@ public interface BoardRepository {
     List<Board> loadByCategory(int categoryId);
     List<Board> loadByTitle(String title);
     List<Board> loadByNickname(String nickname);
+    List<Board> searchByWords(String text);
     Optional<Board> findById(Long id);
     void deleteById(Board board);
 }

@@ -3,6 +3,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,13 +27,13 @@ class ListActivity: AppCompatActivity() {
 
     private val TAG = "ListActivity"
     var boardlist = mutableListOf<Board>(
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"")
+//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
+//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"")
     )
     private val retrofit = RetrofitClient.getInstance()
     private val myAPI: RetrofitService = retrofit.create(RetrofitService::class.java)
@@ -43,6 +44,7 @@ class ListActivity: AppCompatActivity() {
 
         val logoutButton = findViewById<Button>(R.id.logoutButton)
         val postButton = findViewById<Button>(R.id.PostButton)
+        val srcButton = findViewById<SearchView>(R.id.searchView)
         getBoardList()
 
         CoroutineScope(IO).launch {
@@ -77,6 +79,49 @@ class ListActivity: AppCompatActivity() {
             val intent = Intent(this, PostBoardActivity::class.java)
             startActivity(intent)
         }
+
+        srcButton.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // 검색 버튼 누를 때 호출
+                val temp = query.toString().split(" ")
+                var words = "%"
+                for (tmp in temp) {
+                    Log.d(TAG, tmp)
+                    words += "$tmp%"
+                }
+                Log.d(TAG, "onQueryTextSubmit: $words")
+
+                myAPI.searchBoard(words).enqueue(object : Callback<List<Board>> {
+                    override fun onResponse(call: Call<List<Board>>, response: Response<List<Board>>) {
+                        if (response?.isSuccessful) {
+                            Log.d(TAG, response.toString())
+                            Log.d(TAG, call.toString())
+                            response.body()?.let {
+                                for (item in it) {
+                                    Log.d(TAG, item.title)
+                                    Log.d(TAG, item.text)
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "fail")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<List<Board>>, t: Throwable) {
+                        Log.d("FILE : ", call.toString())
+                        Log.d("FAIL", t.message)
+                    }
+                })
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // 검색창에서 글자가 변경이 일어날 때마다 호출
+                // Log.d(TAG, "onQueryTextChange: $newText")
+                return true
+            }
+        })
+
     }
 
     override fun onBackPressed() {
@@ -102,7 +147,7 @@ class ListActivity: AppCompatActivity() {
     private fun getBoardList(){
         myAPI.boardList().enqueue(object : Callback<List<Board>>{
             override fun onFailure(call: Call<List<Board>>, t: Throwable) {
-                TODO("Not yet implemented")
+                // TODO("Not yet implemented")
             }
 
             override fun onResponse(call: Call<List<Board>>, response: Response<List<Board>>) {

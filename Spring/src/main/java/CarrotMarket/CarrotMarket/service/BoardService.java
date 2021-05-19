@@ -32,8 +32,7 @@ public class BoardService {
     }
 
     public List<Board> searchBoard(String text) {
-        //TODO
-        return null;
+        return boardRepository.searchByWords(text);
     }
 
     @Transactional
