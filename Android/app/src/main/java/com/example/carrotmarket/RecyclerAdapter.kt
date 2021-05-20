@@ -111,11 +111,11 @@ class RecyclerAdapter(private val context: Context, private var boardList: Mutab
                 } )
 
             } else{
+                Log.d(TAG, "picture비었음")
                 boardPhoto?.setImageResource(R.drawable.carrot)
             }
 
             boardTitle?.text = board.title
-            // TODO (locationX, locationY 변환 필요)
             boardLocationX?.text = board.locationX.toString()
             boardPrice?.text = board.price.toString() + "원"
 
