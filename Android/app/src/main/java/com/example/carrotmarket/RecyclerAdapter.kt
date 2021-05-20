@@ -9,17 +9,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.network.RetrofitClient
 import com.example.carrotmarket.network.RetrofitService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayInputStream
 
-class RecyclerAdapter(private val context: Context, private val boardList: MutableList<Board>, val itemClick: (Board) -> Unit):RecyclerView.Adapter<RecyclerAdapter.Holder>(){
+class RecyclerAdapter(private val context: Context, private var boardList: MutableList<Board>, val itemClick: (Board) -> Unit):RecyclerView.Adapter<RecyclerAdapter.Holder>(){
 
     private val retrofit = RetrofitClient.getInstance()
     private val myAPI: RetrofitService = retrofit.create(RetrofitService::class.java)
@@ -41,6 +46,41 @@ class RecyclerAdapter(private val context: Context, private val boardList: Mutab
         return boardList.size
     }
 
+    fun update(updated : MutableList<Board>){
+        CoroutineScope(Dispatchers.Main).launch {
+            val diffResult = async(Dispatchers.IO){
+                getDiffResult(updated)
+            }
+            boardList = updated
+            diffResult.await().dispatchUpdatesTo(this@RecyclerAdapter)
+        }
+    }
+
+    private fun getDiffResult(updated: MutableList<Board>): DiffUtil.DiffResult{
+        val diffCallback =ListDiffCallback(boardList,updated)
+        return DiffUtil.calculateDiff(diffCallback)
+    }
+
+    fun getItem(position: Int) = boardList[position]
+
+    class ListDiffCallback(private val oldList: MutableList<Board>, private val newList: MutableList<Board>) : DiffUtil.Callback(){
+        override fun getNewListSize(): Int {
+            return newList.size
+        }
+
+        override fun getOldListSize(): Int {
+            return oldList.size
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition] == newList[newItemPosition]
+        }
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].id == newList[newItemPosition].id
+        }
+    }
+
     inner class Holder(itemView: View?, itemClick: (Board) -> Unit) : RecyclerView.ViewHolder(itemView!!) {
         private val boardPhoto = itemView?.findViewById<ImageView>(R.id.boardPhotoImg)
         private val boardTitle = itemView?.findViewById<TextView>(R.id.boardName)
@@ -49,10 +89,11 @@ class RecyclerAdapter(private val context: Context, private val boardList: Mutab
 
         @SuppressLint("SetTextI18n")
         fun bind(board: Board, context: Context) {
-            /* Photo의 setImageResource에 들어갈 이미지의 id를 파일명(String)으로 찾고,
-          이미지가 없는 경우 안드로이드 기본 아이콘을 표시한다.*/
+            /* Photo의 setImageResource에 들어갈 이미지의 id를 파일명(String)으로 찾고, 이미지가 없는 경우 안드로이드 기본 아이콘을 표시한다.*/
+
             if (board.picture != "") {
                 /**val resourceId = context.resources.getIdentifier(board.picture, "drawable", context.packageName)*/
+
                 myAPI.getPreviewImage(board.id).enqueue(object : Callback<ResponseBody> {
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                         Log.d(TAG, t.message)
@@ -71,17 +112,16 @@ class RecyclerAdapter(private val context: Context, private val boardList: Mutab
                 } )
 
             } else{
+                Log.d(TAG, "picture비었음")
                 boardPhoto?.setImageResource(R.drawable.carrot)
             }
 
             boardTitle?.text = board.title
-            // TODO (locationX, locationY 변환 필요)
             boardLocationX?.text = board.locationX.toString()
             boardPrice?.text = board.price.toString() + "원"
 
             itemView.setOnClickListener{itemClick(board)}
         }
     }
-
 
 }

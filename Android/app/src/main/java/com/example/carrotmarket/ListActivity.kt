@@ -12,29 +12,18 @@ import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.network.RetrofitClient
 import com.example.carrotmarket.network.RetrofitService
 import kotlinx.android.synthetic.main.activity_boardlist.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.coroutines.coroutineContext
 
 class ListActivity: AppCompatActivity() {
 
     var backPressedTime : Long = 0;
 
     private val TAG = "ListActivity"
-    var boardlist = mutableListOf<Board>(
-//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,""),
-//            Board(2,2222,"test2","test2",2,2.toFloat(),2.toFloat(),"test2","11111111","11111116",2,2,2,"")
-    )
+    var boardlist = mutableListOf<Board>()
     private val retrofit = RetrofitClient.getInstance()
     private val myAPI: RetrofitService = retrofit.create(RetrofitService::class.java)
 
@@ -45,25 +34,15 @@ class ListActivity: AppCompatActivity() {
         val logoutButton = findViewById<Button>(R.id.logoutButton)
         val postButton = findViewById<Button>(R.id.PostButton)
         val srcButton = findViewById<SearchView>(R.id.searchView)
+
+        /**
+         * https://doitddo.tistory.com/84
+         * */
+
         getBoardList()
 
-        CoroutineScope(IO).launch {
-
-            withContext(Main){
-                val boardAdapter = RecyclerAdapter(this@ListActivity,boardlist){
-                    val intent = Intent(this@ListActivity,BoardActivity::class.java)
-                    /**
-                     * id를 string으로 변환후 넘김
-                     * */
-                    intent.putExtra("board",it.id)
-                    startActivity(intent)
-                }
-                boardRecyclerView.adapter = boardAdapter
-
-                val lm = LinearLayoutManager(this@ListActivity)
-                boardRecyclerView.layoutManager = lm
-                boardRecyclerView.setHasFixedSize(true)
-            }
+        CoroutineScope(Dispatchers.Main).launch {
+            setAdapter(boardlist)
         }
 
         logoutButton.setOnClickListener {
@@ -124,6 +103,21 @@ class ListActivity: AppCompatActivity() {
 
     }
 
+    private fun setAdapter(boardList : List<Board>){
+        val boardAdapter = RecyclerAdapter(this@ListActivity, boardlist) {
+            val intent = Intent(this@ListActivity, BoardActivity::class.java)
+            Log.d(TAG, "get Adapter -> ${it.id}")
+            intent.putExtra("board", it.id)
+            startActivity(intent)
+        }
+
+        boardRecyclerView.adapter = boardAdapter
+
+        val lm = LinearLayoutManager(this@ListActivity)
+        boardRecyclerView.layoutManager = lm
+        boardRecyclerView.setHasFixedSize(true)
+    }
+
     override fun onBackPressed() {
         // super.onBackPressed()
         var tempTime : Long = System.currentTimeMillis()
@@ -151,27 +145,34 @@ class ListActivity: AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<List<Board>>, response: Response<List<Board>>) {
-                response.body()?.let {
-                    for (item in it){
-                        Log.d(TAG, "item : ${item.id}")
-                        Log.d(TAG, "item : ${item.price}")
-                        Log.d(TAG, "item : ${item.title}")
-                        Log.d(TAG, "item : ${item.text}")
-                        Log.d(TAG, "item : ${item.categoryId}")
-                        Log.d(TAG, "item : ${item.locationX}")
-                        Log.d(TAG, "item : ${item.locationY}")
-                        Log.d(TAG, "item : ${item.nickname}")
-                        Log.d(TAG, "item : ${item.registerDate}")
-                        Log.d(TAG, "item : ${item.deadlineDate}")
-                        Log.d(TAG, "item : ${item.dibsCnt}")
-                        Log.d(TAG, "item : ${item.picture}")
+                if(response.isSuccessful){
+                    val it = response.body()
 
-                        val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.locationX,item.locationY,item.nickname,item.registerDate,item.deadlineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.picture)
-                        item.picture = "carrot"
+                    if (it != null) {
+                        for ((cnt, item) in it.withIndex()){
+                            Log.d(TAG, "item $cnt")
+                            Log.d(TAG, "item : ${item.id}")
+                            Log.d(TAG, "item : ${item.price}")
+                            Log.d(TAG, "item : ${item.title}")
+                            Log.d(TAG, "item : ${item.text}")
+                            Log.d(TAG, "item : ${item.categoryId}")
+                            Log.d(TAG, "item : ${item.locationX}")
+                            Log.d(TAG, "item : ${item.locationY}")
+                            Log.d(TAG, "item : ${item.nickname}")
+                            Log.d(TAG, "item : ${item.registerDate}")
+                            Log.d(TAG, "item : ${item.deadlineDate}")
+                            Log.d(TAG, "item : ${item.dibsCnt}")
+                            Log.d(TAG, "item : ${item.picture}")
 
-                        boardlist.add(board)
+                            val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.locationX,item.locationY,item.nickname,item.registerDate,item.deadlineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.picture)
+                            boardlist.add(board)
+                        }
+
                     }
+
                 }
+
+
             }
         })
     }

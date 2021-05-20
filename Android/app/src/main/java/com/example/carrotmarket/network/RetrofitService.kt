@@ -74,6 +74,9 @@ interface RetrofitService {
     @GET("download/{id}/preview")
     fun getPreviewImage(@Path("id") id: Long?): Call<ResponseBody>
 
+    @GET("download/{id}/{filename}}")
+    fun getBoardImage(@Path("id") id: Long?, picture: String?): Call<ResponseBody>
+
     @POST("/board/search")
     @FormUrlEncoded
     fun searchBoard(@Field("text") text: String?): Call<List<Board>>
