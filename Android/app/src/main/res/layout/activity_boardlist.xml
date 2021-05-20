@@ -14,13 +14,24 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="8dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/boardRecyclerView"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/searchView">
+        android:layout_height=""
+        app:layout_constraintTop_toTopOf="@+id/searchView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/boardRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout2"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
+            >
+
+        </androidx.recyclerview.widget.RecyclerView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/logoutButton"

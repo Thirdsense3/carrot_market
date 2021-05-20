@@ -75,11 +75,18 @@ class ListActivity: AppCompatActivity() {
                         if (response?.isSuccessful) {
                             Log.d(TAG, response.toString())
                             Log.d(TAG, call.toString())
+                            boardlist = mutableListOf<Board>()
                             response.body()?.let {
                                 for (item in it) {
                                     Log.d(TAG, item.title)
                                     Log.d(TAG, item.text)
+
+                                    val board = Board(item.id, item.price, item.title, item.text, item.categoryId, item.locationX, item.locationY, item.nickname, item.registerDate, item.deadlineDate, item.dibsCnt, item.viewCnt, item.chatCnt, item.picture)
+                                    boardlist.add(board)
                                 }
+                            }
+                            CoroutineScope(Dispatchers.Main).launch {
+                                setAdapter(boardlist)
                             }
                         } else {
                             Log.d(TAG, "fail")
