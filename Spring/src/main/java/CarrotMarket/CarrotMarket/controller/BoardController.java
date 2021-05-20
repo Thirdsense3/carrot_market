@@ -81,6 +81,8 @@ public class BoardController {
     public Board PostBoard(Board board) {
         String baseDir = "C:\\images\\";
         Board newBoard = new Board(board.getPrice(), board.getTitle(), board.getText(), board.getCategoryId(), board.getNickname(), board.getRegisterDate(), board.getDeadlineDate(), board.getLocationX(), board.getLocationY());
+        if(board.getId() != null)
+            newBoard.setId(board.getId());
         newBoard.setPicture(board.getPicture());
         boardService.postBoard(newBoard);
         return newBoard;
@@ -153,6 +155,7 @@ public class BoardController {
     @ResponseBody
     public String DeleteBoard(Board board) {
         System.out.println("/board/delete:" + board.getId());
+        boardService.deleteImages(board.getId());
         boardService.deleteById(board);
         return "ok";
     }
