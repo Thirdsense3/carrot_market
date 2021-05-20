@@ -15,6 +15,7 @@ import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.coroutines.coroutineContext
 
 class ListActivity: AppCompatActivity() {
 
@@ -36,12 +37,11 @@ class ListActivity: AppCompatActivity() {
          * https://doitddo.tistory.com/84
          * */
 
-        CoroutineScope(Dispatchers.Main).launch {
-            val loadBoard = CoroutineScope(Dispatchers.Main).async{
-                getAdapter()
-            }.await()
 
-            getBoardList()
+        getBoardList()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            setAdapter(boardlist)
         }
 
         logoutButton.setOnClickListener {
@@ -57,6 +57,21 @@ class ListActivity: AppCompatActivity() {
             val intent = Intent(this, PostBoardActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun setAdapter(boardList : List<Board>){
+        val boardAdapter = RecyclerAdapter(this@ListActivity, boardlist) {
+            val intent = Intent(this@ListActivity, BoardActivity::class.java)
+            Log.d(TAG, "get Adapter -> ${it.id}")
+            intent.putExtra("board", it.id)
+            startActivity(intent)
+        }
+
+        boardRecyclerView.adapter = boardAdapter
+
+        val lm = LinearLayoutManager(this@ListActivity)
+        boardRecyclerView.layoutManager = lm
+        boardRecyclerView.setHasFixedSize(true)
     }
 
     override fun onBackPressed() {
@@ -86,45 +101,36 @@ class ListActivity: AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<List<Board>>, response: Response<List<Board>>) {
-                response.body()?.let {
+                if(response.isSuccessful){
+                    val it = response.body()
 
-                    for ((cnt, item) in it.withIndex()){
-                        Log.d(TAG, "item $cnt")
-                        Log.d(TAG, "item : ${item.id}")
-                        Log.d(TAG, "item : ${item.price}")
-                        Log.d(TAG, "item : ${item.title}")
-                        Log.d(TAG, "item : ${item.text}")
-                        Log.d(TAG, "item : ${item.categoryId}")
-                        Log.d(TAG, "item : ${item.locationX}")
-                        Log.d(TAG, "item : ${item.locationY}")
-                        Log.d(TAG, "item : ${item.nickname}")
-                        Log.d(TAG, "item : ${item.registerDate}")
-                        Log.d(TAG, "item : ${item.deadlineDate}")
-                        Log.d(TAG, "item : ${item.dibsCnt}")
-                        Log.d(TAG, "item : ${item.picture}")
+                    if (it != null) {
+                        for ((cnt, item) in it.withIndex()){
+                            Log.d(TAG, "item $cnt")
+                            Log.d(TAG, "item : ${item.id}")
+                            Log.d(TAG, "item : ${item.price}")
+                            Log.d(TAG, "item : ${item.title}")
+                            Log.d(TAG, "item : ${item.text}")
+                            Log.d(TAG, "item : ${item.categoryId}")
+                            Log.d(TAG, "item : ${item.locationX}")
+                            Log.d(TAG, "item : ${item.locationY}")
+                            Log.d(TAG, "item : ${item.nickname}")
+                            Log.d(TAG, "item : ${item.registerDate}")
+                            Log.d(TAG, "item : ${item.deadlineDate}")
+                            Log.d(TAG, "item : ${item.dibsCnt}")
+                            Log.d(TAG, "item : ${item.picture}")
 
-                        val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.locationX,item.locationY,item.nickname,item.registerDate,item.deadlineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.picture)
+                            val board = Board(item.id,item.price,item.title,item.text,item.categoryId,item.locationX,item.locationY,item.nickname,item.registerDate,item.deadlineDate,item.dibsCnt,item.viewCnt,item.chatCnt,item.picture)
+                            boardlist.add(board)
+                        }
 
-                        boardlist.add(board)
                     }
+
                 }
+
+
             }
         })
-    }
-
-    private fun getAdapter(){
-        val boardAdapter = RecyclerAdapter(this@ListActivity,boardlist){
-            val intent = Intent(this@ListActivity,BoardActivity::class.java)
-            Log.d(TAG,"get Adapter -> ${it.id}")
-            intent.putExtra("board",it.id)
-            startActivity(intent)
-        }
-
-        boardRecyclerView.adapter = boardAdapter
-
-        val lm = LinearLayoutManager(this@ListActivity)
-        boardRecyclerView.layoutManager = lm
-        boardRecyclerView.setHasFixedSize(true)
     }
 
 }
