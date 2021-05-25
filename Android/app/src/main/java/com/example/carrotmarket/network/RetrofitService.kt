@@ -80,4 +80,8 @@ interface RetrofitService {
     @POST("/board/search")
     @FormUrlEncoded
     fun searchBoard(@Field("text") text: String?): Call<List<Board>>
+
+    @POST("/board/searchTitle")
+    @FormUrlEncoded
+    fun searchTitle(@Field("title") title: String?): Call<List<Board>>
 }

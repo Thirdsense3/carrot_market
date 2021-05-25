@@ -75,6 +75,14 @@ public class JpaBoardRepository implements BoardRepository{
     }
 
     @Override
+    public List<Board> searchBoardTitle(String title) {
+        System.out.println("searchBoardTitle: " + title);
+        return em.createQuery("select b from Board b where b.title like :title", Board.class)
+                .setParameter("title", title)
+                .getResultList();
+    }
+
+    @Override
     public Optional<Board> findById(Long id) {
         return Optional.ofNullable(em.find(Board.class, id));
     }

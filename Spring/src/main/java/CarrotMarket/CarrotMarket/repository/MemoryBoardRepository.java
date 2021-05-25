@@ -78,6 +78,12 @@ public class MemoryBoardRepository implements BoardRepository{
     }
 
     @Override
+    public List<Board> searchBoardTitle(String title) {
+        System.out.println("MemoryBoardRepository searchBoardTitle():" + title);
+        return new ArrayList<>(store.values());
+    }
+
+    @Override
     public Optional<Board> findById(Long id) {
         return Optional.ofNullable(store.get(id));
     }

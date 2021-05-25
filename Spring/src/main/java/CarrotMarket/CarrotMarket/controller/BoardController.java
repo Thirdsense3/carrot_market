@@ -166,4 +166,11 @@ public class BoardController {
         System.out.println("/board/search:" + text);
         return boardService.searchBoard(text);
     }
+
+    @PostMapping("/board/searchTitle")
+    @ResponseBody
+    public List<Board> SearchTitle(String title) {
+        System.out.println("/board/searchTitle:" + title);
+        return boardService.searchBoardTitle(title);
+    }
 }

@@ -14,6 +14,7 @@ public interface BoardRepository {
     List<Board> loadByTitle(String title);
     List<Board> loadByNickname(String nickname);
     List<Board> searchByWords(String text);
+    List<Board> searchBoardTitle(String title);
     Optional<Board> findById(Long id);
     void deleteById(Board board);
 }

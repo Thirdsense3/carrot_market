@@ -37,6 +37,10 @@ public class BoardService {
         return boardRepository.searchByWords(text);
     }
 
+    public List<Board> searchBoardTitle(String title) {
+        return boardRepository.searchBoardTitle(title);
+    }
+
     @Transactional
     public Board editBoard(Board board) {
         Board preBoard = boardRepository.findById(board.getId()).get();
