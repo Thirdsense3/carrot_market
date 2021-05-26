@@ -2,9 +2,8 @@ package com.example.carrotmarket
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.SearchView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.carrotmarket.dto.AccountSharedPreferences
@@ -16,7 +15,6 @@ import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.coroutines.coroutineContext
 
 class ListActivity: AppCompatActivity() {
 
@@ -26,6 +24,7 @@ class ListActivity: AppCompatActivity() {
     var boardlist = mutableListOf<Board>()
     private val retrofit = RetrofitClient.getInstance()
     private val myAPI: RetrofitService = retrofit.create(RetrofitService::class.java)
+    private var isSearching = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +33,9 @@ class ListActivity: AppCompatActivity() {
         val logoutButton = findViewById<Button>(R.id.logoutButton)
         val postButton = findViewById<Button>(R.id.PostButton)
         val srcButton = findViewById<SearchView>(R.id.searchView)
+        val spinner = findViewById<Spinner>(R.id.srcSpinner)
+        var selectSrc = 0
+        val listOfSpinner = arrayOf("제목+내용", "제목만")
 
         /**
          * https://doitddo.tistory.com/84
@@ -41,9 +43,9 @@ class ListActivity: AppCompatActivity() {
 
         getBoardList()
 
-        CoroutineScope(Dispatchers.Main).launch {
-            setAdapter(boardlist)
-        }
+//        CoroutineScope(Dispatchers.Main).launch {
+//            setAdapter(boardlist)
+//        }
 
         logoutButton.setOnClickListener {
             AccountSharedPreferences.deleteUserData(this)
@@ -59,9 +61,28 @@ class ListActivity: AppCompatActivity() {
             startActivity(intent)
         }
 
+        spinner.adapter = ArrayAdapter(this, R.layout.spinner_item, listOfSpinner)
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                Log.d(TAG, "onItemSelected: $position")
+                selectSrc = position
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                Log.e(TAG, "Nothing Selected")
+            }
+        }
+
         srcButton.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // 검색 버튼 누를 때 호출
+                isSearching = true
                 val temp = query.toString().split(" ")
                 var words = "%"
                 for (tmp in temp) {
@@ -69,35 +90,104 @@ class ListActivity: AppCompatActivity() {
                     words += "$tmp%"
                 }
                 Log.d(TAG, "onQueryTextSubmit: $words")
+                Log.d(TAG, "selectSrc: $selectSrc")
 
-                myAPI.searchBoard(words).enqueue(object : Callback<List<Board>> {
-                    override fun onResponse(call: Call<List<Board>>, response: Response<List<Board>>) {
-                        if (response?.isSuccessful) {
-                            Log.d(TAG, response.toString())
-                            Log.d(TAG, call.toString())
-                            boardlist = mutableListOf<Board>()
-                            response.body()?.let {
-                                for (item in it) {
-                                    Log.d(TAG, item.title)
-                                    Log.d(TAG, item.text)
+                if (selectSrc == 0) {
+                    myAPI.searchBoard(words).enqueue(object : Callback<List<Board>> {
+                        override fun onResponse(
+                            call: Call<List<Board>>,
+                            response: Response<List<Board>>
+                        ) {
+                            if (response?.isSuccessful) {
+                                Log.d(TAG, response.toString())
+                                Log.d(TAG, call.toString())
+                                boardlist = mutableListOf<Board>()
+                                response.body()?.let {
+                                    for (item in it) {
+                                        Log.d(TAG, item.title)
+                                        Log.d(TAG, item.text)
 
-                                    val board = Board(item.id, item.price, item.title, item.text, item.categoryId, item.locationX, item.locationY, item.nickname, item.registerDate, item.deadlineDate, item.dibsCnt, item.viewCnt, item.chatCnt, item.picture)
-                                    boardlist.add(board)
+                                        val board = Board(
+                                            item.id,
+                                            item.price,
+                                            item.title,
+                                            item.text,
+                                            item.categoryId,
+                                            item.locationX,
+                                            item.locationY,
+                                            item.nickname,
+                                            item.registerDate,
+                                            item.deadlineDate,
+                                            item.dibsCnt,
+                                            item.viewCnt,
+                                            item.chatCnt,
+                                            item.picture
+                                        )
+                                        boardlist.add(board)
+                                    }
                                 }
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    setAdapter(boardlist)
+                                }
+                            } else {
+                                Log.d(TAG, "fail")
                             }
-                            CoroutineScope(Dispatchers.Main).launch {
-                                setAdapter(boardlist)
-                            }
-                        } else {
-                            Log.d(TAG, "fail")
                         }
-                    }
 
-                    override fun onFailure(call: Call<List<Board>>, t: Throwable) {
-                        Log.d("FILE : ", call.toString())
-                        Log.d("FAIL", t.message)
-                    }
-                })
+                        override fun onFailure(call: Call<List<Board>>, t: Throwable) {
+                            Log.d("FILE : ", call.toString())
+                            Log.d("FAIL", t.message)
+                        }
+                    })
+                }
+                else {
+                    myAPI.searchTitle(words).enqueue(object : Callback<List<Board>> {
+                        override fun onResponse(
+                            call: Call<List<Board>>,
+                            response: Response<List<Board>>
+                        ) {
+                            if (response?.isSuccessful) {
+                                Log.d(TAG, response.toString())
+                                Log.d(TAG, call.toString())
+                                boardlist = mutableListOf<Board>()
+                                response.body()?.let {
+                                    for (item in it) {
+                                        Log.d(TAG, item.title)
+                                        Log.d(TAG, item.text)
+
+                                        val board = Board(
+                                            item.id,
+                                            item.price,
+                                            item.title,
+                                            item.text,
+                                            item.categoryId,
+                                            item.locationX,
+                                            item.locationY,
+                                            item.nickname,
+                                            item.registerDate,
+                                            item.deadlineDate,
+                                            item.dibsCnt,
+                                            item.viewCnt,
+                                            item.chatCnt,
+                                            item.picture
+                                        )
+                                        boardlist.add(board)
+                                    }
+                                }
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    setAdapter(boardlist)
+                                }
+                            } else {
+                                Log.d(TAG, "fail")
+                            }
+                        }
+
+                        override fun onFailure(call: Call<List<Board>>, t: Throwable) {
+                            Log.d("FILE : ", call.toString())
+                            Log.d("FAIL", t.message)
+                        }
+                    })
+                }
                 return true
             }
 
@@ -127,21 +217,31 @@ class ListActivity: AppCompatActivity() {
 
     override fun onBackPressed() {
         // super.onBackPressed()
-        var tempTime : Long = System.currentTimeMillis()
-        var intervalTime : Long = tempTime - backPressedTime
-        val toast = Toast.makeText(this@ListActivity,"한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT)
-
-        if(System.currentTimeMillis() > backPressedTime + 2000) {
-            backPressedTime = System.currentTimeMillis()
-            toast.show()
-            return
+        if (isSearching) {
+            boardlist = mutableListOf<Board>()
+            getBoardList()
+//            CoroutineScope(Dispatchers.Main).launch {
+//                setAdapter(boardlist)
+//            }
+            isSearching = false
         }
+        else {
+            var tempTime: Long = System.currentTimeMillis()
+            var intervalTime: Long = tempTime - backPressedTime
+            val toast = Toast.makeText(this@ListActivity, "한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT)
 
-        if(System.currentTimeMillis() <= backPressedTime + 2000) {
-            finishAffinity()
-            toast.cancel()
-            System.runFinalization()
-            System.exit(0)
+            if (System.currentTimeMillis() > backPressedTime + 2000) {
+                backPressedTime = System.currentTimeMillis()
+                toast.show()
+                return
+            }
+
+            if (System.currentTimeMillis() <= backPressedTime + 2000) {
+                finishAffinity()
+                toast.cancel()
+                System.runFinalization()
+                System.exit(0)
+            }
         }
     }
 
@@ -175,6 +275,9 @@ class ListActivity: AppCompatActivity() {
                             boardlist.add(board)
                         }
 
+                        CoroutineScope(Dispatchers.Main).launch {
+                            setAdapter(boardlist)
+                        }
                     }
 
                 }
