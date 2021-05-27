@@ -275,9 +275,9 @@ class ListActivity: AppCompatActivity() {
                             boardlist.add(board)
                         }
 
-                        CoroutineScope(Dispatchers.Main).launch {
-                            setAdapter(boardlist)
-                        }
+//                        CoroutineScope(Dispatchers.Main).launch {
+                        setAdapter(boardlist)
+//                        }
                     }
 
                 }
