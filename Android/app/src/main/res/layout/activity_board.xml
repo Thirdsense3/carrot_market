@@ -17,18 +17,19 @@
         android:layout_width="match_parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/boardProductPhoto"
-                android:layout_width="wrap_content"
-                android:layout_height="250dp"
-                android:visibility="visible"
-                app:srcCompat="@drawable/carrot"
-                tools:srcCompat="@drawable/carrot"
-                tools:visibility="visible" />
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/boardPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/carrot"
+                    tools:srcCompat="@drawable/carrot"
+                    tools:visibility="visible" />
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
