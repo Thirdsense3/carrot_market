@@ -5,7 +5,6 @@ import CarrotMarket.CarrotMarket.domain.Member;
 import CarrotMarket.CarrotMarket.repository.MemberRepository;
 import CarrotMarket.CarrotMarket.service.MailSender;
 import CarrotMarket.CarrotMarket.service.MemberService;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
