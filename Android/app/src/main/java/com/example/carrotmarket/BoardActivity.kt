@@ -45,9 +45,6 @@ class BoardActivity: AppCompatActivity() {
 
         viewPager = findViewById(R.id.boardPager)
 
-        val pagerAdapter = ScreenSlidePagerAdapter(this)
-        viewPager.adapter = pagerAdapter
-
         val toolbar:Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
@@ -110,6 +107,9 @@ class BoardActivity: AppCompatActivity() {
         } else {
             Toast.makeText(this@BoardActivity, "게시물 id 오류", Toast.LENGTH_SHORT).show()
         }
+
+        val pagerAdapter = ScreenSlidePagerAdapter(this)
+        viewPager.adapter = pagerAdapter
     }
 
     @Override
@@ -129,7 +129,7 @@ class BoardActivity: AppCompatActivity() {
                         if (response?.isSuccessful) {
                             Log.d("BoardActivity", response.toString())
                             Log.d("BoardActivity", call.toString())
-
+    
                             Toast.makeText(this@BoardActivity,"삭제되었습니다.",Toast.LENGTH_SHORT).show()
 
                             val intent = Intent(this@BoardActivity, ListActivity::class.java)
