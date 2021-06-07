@@ -200,7 +200,14 @@ class BoardActivity: AppCompatActivity() {
     private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = NUM_PAGES
 
-        override fun createFragment(position: Int): Fragment = ScreenSlidePageFragment()
+        override fun createFragment(position: Int): Fragment {
+
+//            when(position) {
+//                0 -> ScreenSlidePageFragment(R.drawable.hashtag_image)
+//                1 -> ScreenSlidePageFragment(R.drawable.nomad_image)
+//                else -> ScreenSlidePageFragment(R.drawable.record_image)
+            }
+        }
     }
 
 }
