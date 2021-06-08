@@ -31,6 +31,7 @@ class BoardActivity: AppCompatActivity() {
     private val retrofit = RetrofitClient.getInstance()
     private val myAPI: RetrofitService = retrofit.create(RetrofitService::class.java)
     lateinit var board: Board
+    lateinit var imagesString: MutableList<String>
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -83,6 +84,15 @@ class BoardActivity: AppCompatActivity() {
                     boardTitle.text = board.title
                     boardContents.text = board.text
                     boardPrice.text = board.price.toString() + "원"
+
+                    val stringTmp = board.picture.split(" ")
+                    val baseURL = "http://10.0.2.2:8080/"
+
+                    for(index in stringTmp) {
+                        val str:String = "${baseURL}/download/${board.id}/${index}"
+                        Log.d(TAG,str)
+                        imagesString.add(str)
+                    }
 
                     var cnt:String = ""
 
