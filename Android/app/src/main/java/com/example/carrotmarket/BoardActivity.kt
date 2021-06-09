@@ -7,8 +7,15 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.network.RetrofitClient
 import com.example.carrotmarket.network.RetrofitService
@@ -17,11 +24,6 @@ import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
 
 
 private const val NUM_PAGES = 5
@@ -31,22 +33,22 @@ class BoardActivity: AppCompatActivity() {
     private val retrofit = RetrofitClient.getInstance()
     private val myAPI: RetrofitService = retrofit.create(RetrofitService::class.java)
     lateinit var board: Board
-    lateinit var imagesString: MutableList<String>
+    var imagesString =  mutableListOf<String>()
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
      */
-    private lateinit var viewPager: ViewPager2
+    private lateinit var sliderViewPager: ViewPager2
+    private lateinit var layoutIndicator: LinearLayout
+
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_board)
 
-        viewPager = findViewById(R.id.boardPager)
-
-        val toolbar:Toolbar = findViewById(R.id.toolbar)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         if (intent.hasExtra("board")) {
@@ -75,7 +77,22 @@ class BoardActivity: AppCompatActivity() {
                         Log.d(TAG, "item : ${it.dibsCnt}")
                         Log.d(TAG, "item : ${it.picture}")
 
-                        board = Board(it.id, it.price, it.title, it.text, it.categoryId, it.locationX, it.locationY, it.nickname, it.registerDate, it.deadlineDate, it.dibsCnt, it.viewCnt, it.chatCnt, it.picture)
+                        board = Board(
+                            it.id,
+                            it.price,
+                            it.title,
+                            it.text,
+                            it.categoryId,
+                            it.locationX,
+                            it.locationY,
+                            it.nickname,
+                            it.registerDate,
+                            it.deadlineDate,
+                            it.dibsCnt,
+                            it.viewCnt,
+                            it.chatCnt,
+                            it.picture
+                        )
 
                     }
 
@@ -87,14 +104,30 @@ class BoardActivity: AppCompatActivity() {
 
                     val stringTmp = board.picture.split(" ")
                     val baseURL = "http://10.0.2.2:8080/"
+                    Log.d(TAG, stringTmp.toString())
 
-                    for(index in stringTmp) {
-                        val str:String = "${baseURL}/download/${board.id}/${index}"
-                        Log.d(TAG,str)
+                    for (index in stringTmp) {
+                        val str: String = "${baseURL}/download/${board.id}/${index}"
+                        Log.d(TAG, str)
                         imagesString.add(str)
                     }
 
-                    var cnt:String = ""
+                    sliderViewPager = findViewById(R.id.sliderViewPager)
+                    layoutIndicator = findViewById(R.id.layoutIndicators);
+
+                    sliderViewPager.offscreenPageLimit = 1
+                    sliderViewPager.adapter = ImageSliderAdapter(this@BoardActivity, imagesString)
+
+                    sliderViewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+                        override fun onPageSelected(position: Int) {
+                            super.onPageSelected(position)
+                            setCurrentIndicator(position)
+                        }
+                    })
+
+                    setupIndicators(imagesString.size-1)
+
+                    var cnt: String = ""
 
                     if (board.chatCnt >= 0) {
                         cnt += "채팅 " + board.chatCnt + " "
@@ -118,29 +151,28 @@ class BoardActivity: AppCompatActivity() {
             Toast.makeText(this@BoardActivity, "게시물 id 오류", Toast.LENGTH_SHORT).show()
         }
 
-        val pagerAdapter = ScreenSlidePagerAdapter(this)
-        viewPager.adapter = pagerAdapter
     }
 
     @Override
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val menuInflater:MenuInflater = menuInflater
-        menuInflater.inflate(R.menu.menu,menu)
+        val menuInflater: MenuInflater = menuInflater
+        menuInflater.inflate(R.menu.menu, menu)
         return true
     }
 
     @Override
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         //return super.onOptionsItemSelected(item)
-        return when(item.itemId){
+        return when (item.itemId) {
             R.id.boardDelete -> {
                 myAPI.deleteBoard(board.id).enqueue(object : Callback<String> {
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         if (response?.isSuccessful) {
                             Log.d("BoardActivity", response.toString())
                             Log.d("BoardActivity", call.toString())
-    
-                            Toast.makeText(this@BoardActivity,"삭제되었습니다.",Toast.LENGTH_SHORT).show()
+
+                            Toast.makeText(this@BoardActivity, "삭제되었습니다.", Toast.LENGTH_SHORT)
+                                .show()
 
                             val intent = Intent(this@BoardActivity, ListActivity::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -160,11 +192,11 @@ class BoardActivity: AppCompatActivity() {
                 true
             }
             R.id.boardEdit -> {
-                Toast.makeText(this,"수정하기 클릭",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "수정하기 클릭", Toast.LENGTH_SHORT).show()
                 true
             }
-            else ->{
-                Toast.makeText(this,"나머지 버튼 클릭",Toast.LENGTH_SHORT).show()
+            else -> {
+                Toast.makeText(this, "나머지 버튼 클릭", Toast.LENGTH_SHORT).show()
                 super.onOptionsItemSelected(item)
             }
         }
@@ -182,7 +214,22 @@ class BoardActivity: AppCompatActivity() {
 
             override fun onResponse(call: Call<Board>, response: Response<Board>) {
                 response.body()?.let {
-                    board = Board(it.id, it.price, it.title, it.text, it.categoryId, it.locationX, it.locationY, it.nickname, it.registerDate, it.deadlineDate, it.dibsCnt, it.viewCnt, it.chatCnt, it.picture)
+                    board = Board(
+                        it.id,
+                        it.price,
+                        it.title,
+                        it.text,
+                        it.categoryId,
+                        it.locationX,
+                        it.locationY,
+                        it.nickname,
+                        it.registerDate,
+                        it.deadlineDate,
+                        it.dibsCnt,
+                        it.viewCnt,
+                        it.chatCnt,
+                        it.picture
+                    )
                 }
             }
 
@@ -190,32 +237,44 @@ class BoardActivity: AppCompatActivity() {
 
         return board
     }
-
-    override fun onBackPressed() {
-        if (viewPager.currentItem == 0) {
-            // If the user is currently looking at the first step, allow the system to handle the
-            // Back button. This calls finish() on this activity and pops the back stack.
-            super.onBackPressed()
-        } else {
-            // Otherwise, select the previous step.
-            viewPager.currentItem = viewPager.currentItem - 1
+    private fun setupIndicators(count: Int) {
+        val indicators = arrayOfNulls<ImageView>(count)
+        val params = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        params.setMargins(16, 8, 16, 8)
+        for (i in indicators.indices) {
+            indicators[i] = ImageView(this)
+            indicators[i]!!.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.bg_indicator_inactive
+                )
+            )
+            indicators[i]!!.layoutParams = params
+            layoutIndicator.addView(indicators[i])
         }
+        setCurrentIndicator(0)
     }
 
-    /**
-     * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
-     * sequence.
-     */
-
-    private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
-        override fun getItemCount(): Int = NUM_PAGES
-
-        override fun createFragment(position: Int): Fragment {
-
-//            when(position) {
-//                0 -> ScreenSlidePageFragment(R.drawable.hashtag_image)
-//                1 -> ScreenSlidePageFragment(R.drawable.nomad_image)
-//                else -> ScreenSlidePageFragment(R.drawable.record_image)
+    private fun setCurrentIndicator(position: Int) {
+        val childCount: Int = layoutIndicator.childCount
+        for (i in 0 until childCount) {
+            val imageView: ImageView = layoutIndicator.getChildAt(i) as ImageView
+            if (i == position) {
+                imageView.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.bg_indicator_active
+                    )
+                )
+            } else {
+                imageView.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.bg_indicator_inactive
+                    )
+                )
             }
         }
     }

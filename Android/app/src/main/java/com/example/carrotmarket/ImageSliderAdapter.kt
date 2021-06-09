@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
 
-class ImageSliderAdapter(context: Context, sliderImage: Array<String>) :
+class ImageSliderAdapter(context: Context, sliderImage: MutableList<String>) :
     RecyclerView.Adapter<ImageSliderAdapter.MyViewHolder>() {
     private val context: Context = context
-    private val sliderImage: Array<String> = sliderImage
+    private val sliderImage: MutableList<String> = sliderImage
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_slider, parent, false)
         return MyViewHolder(view)

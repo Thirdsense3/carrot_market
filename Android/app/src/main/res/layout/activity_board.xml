@@ -34,7 +34,7 @@
                 android:id="@+id/viewFadingEdge"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:background="@drawable/send"
+                android:background="@drawable/bg_fading_edge"
                 app:layout_constraintBottom_toBottomOf="@id/sliderViewPager" />
 
             <LinearLayout
