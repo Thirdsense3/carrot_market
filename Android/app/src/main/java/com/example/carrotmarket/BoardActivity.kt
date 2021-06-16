@@ -102,11 +102,18 @@ class BoardActivity: AppCompatActivity() {
                     boardContents.text = board.text
                     boardPrice.text = board.price.toString() + "원"
 
+                    Log.d(TAG,"board picture 확인 : ${board.picture}")
+
                     val stringTmp = board.picture.split(" ")
+
+                    Log.d(TAG,"board Split 확인 : $stringTmp")
+
                     val baseURL = "http://10.0.2.2:8080/"
-                    Log.d(TAG, stringTmp.toString())
 
                     for (index in stringTmp) {
+                        if(index==""){
+                            continue;
+                        }
                         val str: String = "${baseURL}/download/${board.id}/${index}"
                         Log.d(TAG, str)
                         imagesString.add(str)
