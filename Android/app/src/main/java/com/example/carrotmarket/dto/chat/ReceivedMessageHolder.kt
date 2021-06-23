@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 //https://sendbird.com/developer/tutorials/android-chat-tutorial-building-a-messaging-ui 참고
-
+/*
 private class ReceivedMessageHolder internal constructor(itemView: View) :
     RecyclerView.ViewHolder(itemView) {
     var messageText: TextView
@@ -32,4 +32,4 @@ private class ReceivedMessageHolder internal constructor(itemView: View) :
         nameText = itemView.findViewById(R.id.text_gchat_message_other)
         profileImage = itemView.findViewById(R.id.image_gchat_profile_other) as ImageView
     }
-}
+}*/
