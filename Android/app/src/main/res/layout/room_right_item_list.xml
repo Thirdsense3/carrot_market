@@ -15,7 +15,7 @@
             android:layout_marginLeft="10dp"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/textv_msg"
+                android:id="@+id/textv_msg2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
@@ -29,7 +29,7 @@
                 android:textSize="15dp" />
 
             <TextView
-                android:id="@+id/textv_time"
+                android:id="@+id/textv_time2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="right"

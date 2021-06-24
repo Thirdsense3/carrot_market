@@ -197,7 +197,12 @@ class ListActivity: AppCompatActivity() {
                 return true
             }
         })
+        val chatBt = findViewById<Button>(R.id.chat_bt)
 
+        chatBt.setOnClickListener {
+            val intent = Intent(this, ChatRoomActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun setAdapter(boardList : List<Board>){
