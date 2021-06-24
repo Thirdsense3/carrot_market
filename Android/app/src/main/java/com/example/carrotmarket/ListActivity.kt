@@ -201,6 +201,8 @@ class ListActivity: AppCompatActivity() {
 
         chatBt.setOnClickListener {
             val intent = Intent(this, ChatRoomActivity::class.java)
+            Log.d(TAG, "chat id -> ${it.id}")
+            intent.putExtra("chatId",it.id)
             startActivity(intent)
         }
     }
