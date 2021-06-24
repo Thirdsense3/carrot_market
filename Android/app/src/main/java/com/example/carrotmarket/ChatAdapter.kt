@@ -37,10 +37,10 @@ class ChatAdapter(private var chatList: MutableList<Chat>): RecyclerView.Adapter
         } else if (holder is LeftViewHolder) {
             holder.textv_nickname.text = chatList[position].nickname
             holder.textv_msg.text = chatList[position].message
-            holder.textv_time.text = Date(chatList[position].unix * 1000).toString()
+            holder.textv_time.text = Date(chatList[position].time.time).toString()
         } else if (holder is RightViewHolder) {
             holder.textv_msg2.text = chatList[position].message
-            holder.textv_time2.text = Date(chatList[position].unix * 1000).toString()
+            holder.textv_time2.text = Date(chatList[position].time.time).toString()
         }
     }
 
