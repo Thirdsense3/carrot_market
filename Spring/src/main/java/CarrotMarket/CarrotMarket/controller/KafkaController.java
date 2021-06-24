@@ -1,5 +1,6 @@
 package CarrotMarket.CarrotMarket.controller;
 
+import CarrotMarket.CarrotMarket.domain.ChatMessage;
 import CarrotMarket.CarrotMarket.kafka.KafkaProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +19,9 @@ public class KafkaController {
     }
 
     @PostMapping
-    public String sendMessage(@RequestParam("message") String message) {
-        this.producer.sendMessage(message);
+    public String sendMessage(ChatMessage message) {
+        String str = message.getMessage();
+        this.producer.sendMessage(str);
 
         return "success";
     }
