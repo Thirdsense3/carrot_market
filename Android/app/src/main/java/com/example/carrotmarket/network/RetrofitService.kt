@@ -1,13 +1,14 @@
 package com.example.carrotmarket.network
 
-import android.content.res.Resources
 import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.dto.CertificationCode
 import com.example.carrotmarket.dto.Member
+import com.example.carrotmarket.dto.chat.ChatMessage
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
+import java.sql.Timestamp
 
 interface RetrofitService {
 
@@ -84,4 +85,13 @@ interface RetrofitService {
     @POST("/board/searchTitle")
     @FormUrlEncoded
     fun searchTitle(@Field("title") title: String?): Call<List<Board>>
+
+    @POST("/kafka")
+    @FormUrlEncoded
+    fun sendMessage(
+        @Field("userId") userId:Int,
+        @Field("message")  message:String,
+        @Field("time") time:Timestamp,
+        @Field("roomId") roomId:Int
+    ): Call<String>
 }
