@@ -27,3 +27,21 @@
     picture varchar(255),
     primary key(id)
     );
+
+    create table chatMessage
+    (
+    message_id int by default as identity,
+    message varchar(255),
+    time timestamp,
+    user_id int,
+    room_id int,
+    primary key(message_id)
+    );
+
+    create table chatRoom
+    (
+    room_id int by default as identity,
+    user_id1 int,
+    user_id2 int,
+    primary key(room_id)
+    );
