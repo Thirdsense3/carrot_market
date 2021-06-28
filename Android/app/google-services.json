@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "884811875313",
+    "project_id": "carrot-market-6d40f",
+    "storage_bucket": "carrot-market-6d40f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:884811875313:android:8194fc0cbe45c605cd3a50",
+        "android_client_info": {
+          "package_name": "com.example.carrotmarket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "884811875313-b5cn4dvnho7jbgdfrf15phu7vb27gcd1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZdZISQ8AQl9uvd_pcfnk3su6Sz03hGr0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "884811875313-b5cn4dvnho7jbgdfrf15phu7vb27gcd1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
