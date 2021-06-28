@@ -1,11 +1,12 @@
-package CarrotMarket.CarrotMarket.repository;
+package CarrotMarket.CarrotMarket.repository.board;
 
 import CarrotMarket.CarrotMarket.domain.Board;
+import CarrotMarket.CarrotMarket.repository.BoardRepository;
 
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class MemoryBoardRepository implements BoardRepository{
+public class MemoryBoardRepository implements BoardRepository {
 
     private static Map<Long, Board> store = new HashMap<>();
     private static Long sequence = 0L;

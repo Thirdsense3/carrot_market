@@ -1,18 +1,15 @@
 package CarrotMarket.CarrotMarket;
 
-import CarrotMarket.CarrotMarket.kafka.KafkaProducer;
-import CarrotMarket.CarrotMarket.repository.*;
+import CarrotMarket.CarrotMarket.repository.board.JpaBoardRepository;
+import CarrotMarket.CarrotMarket.repository.member.JpaMemberRepository;
 import CarrotMarket.CarrotMarket.service.BoardService;
 import CarrotMarket.CarrotMarket.repository.BoardRepository;
 import CarrotMarket.CarrotMarket.repository.MemberRepository;
-import CarrotMarket.CarrotMarket.repository.MemoryBoardRepository;
-import CarrotMarket.CarrotMarket.repository.MemoryMemberRepository;
 import CarrotMarket.CarrotMarket.service.ListService;
 import CarrotMarket.CarrotMarket.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.core.KafkaTemplate;
 
 import javax.persistence.EntityManager;
 

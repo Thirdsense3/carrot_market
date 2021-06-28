@@ -1,13 +1,14 @@
-package CarrotMarket.CarrotMarket.repository;
+package CarrotMarket.CarrotMarket.repository.board;
 
 import CarrotMarket.CarrotMarket.domain.Board;
+import CarrotMarket.CarrotMarket.repository.BoardRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-public class JpaBoardRepository implements BoardRepository{
+public class JpaBoardRepository implements BoardRepository {
 
     private final EntityManager em;
 

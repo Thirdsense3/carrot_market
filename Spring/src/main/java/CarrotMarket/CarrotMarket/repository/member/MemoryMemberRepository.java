@@ -1,6 +1,7 @@
-package CarrotMarket.CarrotMarket.repository;
+package CarrotMarket.CarrotMarket.repository.member;
 
 import CarrotMarket.CarrotMarket.domain.Member;
+import CarrotMarket.CarrotMarket.repository.MemberRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
