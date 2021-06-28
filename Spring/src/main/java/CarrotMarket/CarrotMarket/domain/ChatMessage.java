@@ -13,5 +13,5 @@ public class ChatMessage {
     private int userId;
     private String message;
     private Timestamp time;
-    private int roomIdl;
+    private int roomId;
 }
