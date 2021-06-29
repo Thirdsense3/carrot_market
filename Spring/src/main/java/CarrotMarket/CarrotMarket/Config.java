@@ -7,8 +7,10 @@ import CarrotMarket.CarrotMarket.repository.BoardRepository;
 import CarrotMarket.CarrotMarket.repository.MemberRepository;
 import CarrotMarket.CarrotMarket.repository.MemoryBoardRepository;
 import CarrotMarket.CarrotMarket.repository.MemoryMemberRepository;
+import CarrotMarket.CarrotMarket.repository.UsersRepository;
 import CarrotMarket.CarrotMarket.service.ListService;
 import CarrotMarket.CarrotMarket.service.MemberService;
+import CarrotMarket.CarrotMarket.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +48,16 @@ public class Config {
     public BoardRepository boardRepository() {
         return new JpaBoardRepository(em);
         //return new MemoryBoardRepository();
+    }
+
+    @Bean
+    public UsersService usersService() {
+        return new UsersService(usersRepository());
+    }
+
+    @Bean
+    public UsersRepository usersRepository() {
+        return new JpaUsersRepository(em);
     }
 
     @Bean

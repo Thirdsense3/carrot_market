@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.carrotmarket.dto.AccountSharedPreferences
 import com.example.carrotmarket.dto.Board
+import com.example.carrotmarket.dto.Users
 import com.example.carrotmarket.network.RetrofitClient
 import com.example.carrotmarket.network.RetrofitService
 import kotlinx.android.synthetic.main.activity_boardlist.*
@@ -200,6 +201,23 @@ class ListActivity: AppCompatActivity() {
         val chatBt = findViewById<Button>(R.id.chat_bt)
 
         chatBt.setOnClickListener {
+            // 채팅 테스트 버튼
+            val userTest = Users(2, "email@test.com", "pw12345", "Bill Gates", "no Nickname", "tokentest123")
+            /*myAPI.registerUsers(userTest.email, userTest.password, userTest.name, userTest.nickname, userTest.token).enqueue(object: Callback<Users> {
+                override fun onResponse(call: Call<Users>, response: Response<Users>) {
+                    if (response.isSuccessful) {
+                        Log.d("registerUsers()", response.toString())
+                    } else {
+                        Log.d("registerUsers()", "failed...")
+                    }
+                }
+
+                override fun onFailure(call: Call<Users>, t: Throwable) {
+                    Log.d("FILE : ", call.toString())
+                    Log.d("FAIL", t.message)
+                }
+            })*/
+
             val intent = Intent(this, ChatRoomActivity::class.java)
             startActivity(intent)
         }

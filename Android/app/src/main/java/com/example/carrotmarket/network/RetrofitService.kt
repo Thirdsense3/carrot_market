@@ -4,6 +4,7 @@ import android.content.res.Resources
 import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.dto.CertificationCode
 import com.example.carrotmarket.dto.Member
+import com.example.carrotmarket.dto.Users
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -84,4 +85,14 @@ interface RetrofitService {
     @POST("/board/searchTitle")
     @FormUrlEncoded
     fun searchTitle(@Field("title") title: String?): Call<List<Board>>
+
+    @POST("/users/register")
+    @FormUrlEncoded
+    fun registerUsers(
+        @Field("email") email: String,
+        @Field("password") password: String,
+        @Field("name") name: String,
+        @Field("nickname") nickname: String,
+        @Field("token") token: String
+    ): Call<Users>
 }
