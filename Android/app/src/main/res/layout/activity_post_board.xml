@@ -23,11 +23,35 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="49dp" />
 
+
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="132dp"
             android:src="@drawable/ic_launcher_foreground" />
+
+
+        <!--
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="132dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/layoutIndicators"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/viewFadingEdge"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+            -->
 
         <EditText
             android:id="@+id/priceText"

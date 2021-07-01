@@ -46,6 +46,7 @@ interface RetrofitService {
     @POST("board/posting")
     @FormUrlEncoded
     fun boardPosting(
+            @Field ("id") id : Long,
             @Field ("price") price : Long,
             @Field ("title") title : String,
             @Field ("text") text : String,
@@ -75,7 +76,7 @@ interface RetrofitService {
     fun getPreviewImage(@Path("id") id: Long?): Call<ResponseBody>
 
     @GET("download/{id}/{filename}")
-    fun getBoardImage(@Path("id") id: Long?, picture: String?): Call<ResponseBody>
+    fun getBoardImage(@Path("id") id: Long?, @Path("filename") picture: String?): Call<ResponseBody>
 
     @POST("/board/search")
     @FormUrlEncoded

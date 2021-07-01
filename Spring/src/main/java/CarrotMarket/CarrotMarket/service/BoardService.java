@@ -20,6 +20,7 @@ public class BoardService {
     public Board postBoard(Board board) {
         //TODO : XSS 대비 문자열 관리
         //board.setText(board.getText().replaceAll("[<>/]", ""));
+        System.out.println("board ID : " + board.getId());
         System.out.println(board.getPrice());
         System.out.println(board.getCategoryId());
         System.out.println(board.getTitle());
@@ -30,6 +31,10 @@ public class BoardService {
         System.out.println(board.getDibsCnt());
         System.out.println(board.getViewCnt());
         System.out.println(board.getPicture());
+        /*if(board.getId() == 0)
+            return boardRepository.save(board);
+        else
+            return boardRepository.save(board);*/
         return boardRepository.save(board);
     }
 

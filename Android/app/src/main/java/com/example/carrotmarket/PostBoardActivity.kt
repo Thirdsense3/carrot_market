@@ -1,19 +1,24 @@
 package com.example.carrotmarket
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.os.FileUtils
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.content.FileProvider
+import com.bumptech.glide.Glide
 import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.dto.MyData
 import com.example.carrotmarket.network.RetrofitClient
@@ -23,12 +28,14 @@ import com.gun0912.tedpermission.TedPermission
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
@@ -41,9 +48,10 @@ class PostBoardActivity : AppCompatActivity() {
     lateinit var image : ImageView
     var images = ArrayList<MultipartBody.Part>()
     var imageFile : File? = null
-    lateinit var filename : String
+    var filename : String = ""
     var cntImage : Int = 0
     var pictures = ""
+    var bitmapImages = ArrayList<Bitmap>()
 
     var categoryData = arrayOf("1", "2", "3", "4", "5", "6")
 
@@ -63,6 +71,61 @@ class PostBoardActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categoryChoice.adapter = adapter
         var listener = SpinnerListener()
+
+        val editIntent : Intent = getIntent()
+        if(editIntent.hasExtra("id")) {
+            val settingId : Long = editIntent.getLongExtra("id", 0L)
+            board.id = settingId
+
+            val settingRetrofit = RetrofitClient.getInstance()
+            val settingApi = settingRetrofit.create(RetrofitService::class.java)
+
+            settingApi.getBoard(settingId).enqueue(object : Callback<Board> {
+                override fun onFailure(call: Call<Board>, t: Throwable) {
+                    Toast.makeText(this@PostBoardActivity, "불러오기 실패", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onResponse(call: Call<Board>, response: Response<Board>) {
+                    response.body()?.let {
+                        titleText.setText(it.title)
+                        price.setText(it.price.toString())
+                        textMessage.setText(it.text)
+                        pictures = it.picture
+
+                        var existingImages = it.picture.split(' ')
+
+                        for(pic in existingImages) {
+                            if(pic.equals(""))
+                                break
+                            settingApi.getBoardImage(it.id, pic).enqueue(object : Callback<ResponseBody> {
+                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                    Toast.makeText(this@PostBoardActivity, "불러오기 실패", Toast.LENGTH_SHORT).show()
+                                }
+
+                                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                                    response.body()?.let {
+                                        val inputStream = it.byteStream()
+                                        bitmapImages.add(BitmapFactory.decodeStream(inputStream))
+
+                                        val existingFile : File = File.createTempFile("temp_", ".jpg")
+
+                                        var out : FileOutputStream = FileOutputStream(existingFile)
+                                        bitmapImages.last().compress(Bitmap.CompressFormat.JPEG, 100, out)
+                                        out.close()
+
+                                        var requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), existingFile)
+                                        images.add(MultipartBody.Part.createFormData("imageFile", pic, requestBody))
+
+                                        image.setImageBitmap(bitmapImages.last())
+                                        existingFile.deleteOnExit()
+                                    }
+                                }
+                            })
+                        }
+                    }
+                }
+            })
+        }
 
         pictureButton.setOnClickListener() {
             setPermission()
@@ -89,20 +152,13 @@ class PostBoardActivity : AppCompatActivity() {
             board.picture = pictures
 
             Log.d("deadline", board.deadlineDate)
-            //board.location
 
-            var reqbody : RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
-            var body : MultipartBody.Part = MultipartBody.Part.createFormData("imageFile", filename, reqbody)
             var retrofit = RetrofitClient.getInstance()
             var myApi = retrofit.create(RetrofitService::class.java)
             val intent = Intent(this, ListActivity::class.java)
             var tempId : Long
 
-            /*images.forEach { it ->
-                board.picture += it.toString() + " ";
-            }*/
-
-            myApi.boardPosting(board.price, board.title, board.text, board.categoryId, board.nickname, board.registerDate, board.deadlineDate!!, board.locationX, board.locationY, board.picture).enqueue(object : Callback<Board> {
+            myApi.boardPosting(board.id, board.price, board.title, board.text, board.categoryId, board.nickname, board.registerDate, board.deadlineDate!!, board.locationX, board.locationY, board.picture).enqueue(object : Callback<Board> {
                 override fun onResponse(call : Call<Board>, response: Response<Board>) {
                     response.body()?.let {
                         Log.d("result", it.id.toString())
@@ -132,26 +188,10 @@ class PostBoardActivity : AppCompatActivity() {
                     Log.d("absolute fail", t.message)
                 }
             })
+        }
 
-            /*myApi.postPicture(tempId, body).enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    if (response?.isSuccessful) {
-                        Log.d("FILE : ", imageFile.toString())
-                        Log.d("Hello world", response.toString());
-                        Toast.makeText(this@PostBoardActivity, "File Uploaded Successfully", Toast.LENGTH_LONG).show()
-                        startActivity(intent)
-                    } else {
-                        Log.d("Hello world", "fail");
-                        Toast.makeText(this@PostBoardActivity, "Fail", Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.d("FILE : ", imageFile.toString())
-                    Log.d("FAIL", t.message);
-                    Toast.makeText(this@PostBoardActivity, "완전 Fail", Toast.LENGTH_LONG).show()
-                }
-            })*/
+        image.setOnClickListener() {
+            showAlert()
         }
     }
 
@@ -338,5 +378,20 @@ class PostBoardActivity : AppCompatActivity() {
 
         Log.d("deadline", year.toString() + m + d)
         return year.toString() + m + d
+    }
+
+    private fun showAlert() {
+        val myAlert = AlertDialog.Builder(this)
+        myAlert.setTitle("사진 선택")
+        myAlert.setMessage("사진을 삭제하시겠습니까?")
+        myAlert.setPositiveButton("예") {
+            dialogInterface : DialogInterface, i : Int ->
+            images.removeAt(images.lastIndex)
+        }
+        myAlert.setNegativeButton("취소") {
+            dialogInterface : DialogInterface, i : Int ->
+            Toast.makeText(this, "canceled", Toast.LENGTH_SHORT).show()
+        }
+        myAlert.show()
     }
 }
