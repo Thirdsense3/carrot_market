@@ -34,23 +34,21 @@ public class Users {
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getPassword() { return this.password; }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -58,14 +56,14 @@ public class Users {
     }
 
     public String getNickname() {
-        return nickname;
+        return this.nickname;
     }
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
-    public String getToken() { return token; }
+    public String getToken() { return this.token; }
 
     public void setToken(String token) { this.token = token; }
 }
