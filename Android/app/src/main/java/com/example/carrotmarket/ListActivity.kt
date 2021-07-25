@@ -275,6 +275,7 @@ class ListActivity: AppCompatActivity() {
                             boardlist.add(board)
                         }
 
+                        Log.d("complete ","=================================================================")
 //                        CoroutineScope(Dispatchers.Main).launch {
                         setAdapter(boardlist)
 //                        }

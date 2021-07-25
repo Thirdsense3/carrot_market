@@ -18,6 +18,7 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.content.FileProvider
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.dto.MyData
@@ -52,6 +53,7 @@ class PostBoardActivity : AppCompatActivity() {
     var cntImage : Int = 0
     var pictures = ""
     var bitmapImages = ArrayList<Bitmap>()
+    internal lateinit var sliderViewPager : ViewPager2
 
     var categoryData = arrayOf("1", "2", "3", "4", "5", "6")
 
@@ -66,6 +68,8 @@ class PostBoardActivity : AppCompatActivity() {
         val pictureButton = findViewById<Button>(R.id.picture)
         val albumButton = findViewById<Button>(R.id.album)
         val price = findViewById<EditText>(R.id.priceText)
+        //val sliderViewPager: ViewPager2 = findViewById(R.id.viewpager)
+
 
         var adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoryData)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -118,6 +122,16 @@ class PostBoardActivity : AppCompatActivity() {
 
                                         image.setImageBitmap(bitmapImages.last())
                                         existingFile.deleteOnExit()
+
+                                        sliderViewPager = findViewById(R.id.viewpager)
+                                        sliderViewPager.offscreenPageLimit = 1
+                                        sliderViewPager.adapter = ViewPagerAdapter(this@PostBoardActivity, bitmapImages)
+
+                                        sliderViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                                            override fun onPageSelected(position : Int) {
+                                                super.onPageSelected(position)
+                                            }
+                                        })
                                     }
                                 }
                             })
