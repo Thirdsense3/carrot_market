@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,8 @@ import android.widget.*
 import androidx.core.content.FileProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.dto.MyData
 import com.example.carrotmarket.network.RetrofitClient
@@ -40,19 +43,21 @@ import java.io.InputStream
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class PostBoardActivity : AppCompatActivity() {
     val board : Board = Board(0,0,"","",0,0F,0F,"", "", "", 0, 0, 0, "null")
     val REQUEST_IMAGE_CAPTURE = 1
     val REQUEST_ALBUM = 2
     lateinit var curPhotoPath : String
-    lateinit var image : ImageView
+    //lateinit var image : ImageView
     var images = ArrayList<MultipartBody.Part>()
     var imageFile : File? = null
     var filename : String = ""
     var cntImage : Int = 0
     var pictures = ""
     var bitmapImages = ArrayList<Bitmap>()
+    var pictureList = ArrayList<String>()
     internal lateinit var sliderViewPager : ViewPager2
 
     var categoryData = arrayOf("1", "2", "3", "4", "5", "6")
@@ -60,7 +65,7 @@ class PostBoardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_board)
-        image = findViewById<ImageView>(R.id.imageView)
+        //image = findViewById<ImageView>(R.id.imageView)
         val categoryChoice = findViewById<Spinner>(R.id.categoryChoice)
         val postButton = findViewById<Button>(R.id.posting)
         val titleText = findViewById<EditText>(R.id.titleText)
@@ -68,7 +73,8 @@ class PostBoardActivity : AppCompatActivity() {
         val pictureButton = findViewById<Button>(R.id.picture)
         val albumButton = findViewById<Button>(R.id.album)
         val price = findViewById<EditText>(R.id.priceText)
-        //val sliderViewPager: ViewPager2 = findViewById(R.id.viewpager)
+        sliderViewPager = findViewById(R.id.viewpager2)
+        //var tempbnt : Button = findViewById(R.id.tempbnt)
 
 
         var adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoryData)
@@ -101,16 +107,18 @@ class PostBoardActivity : AppCompatActivity() {
                         for(pic in existingImages) {
                             if(pic.equals(""))
                                 break
-                            settingApi.getBoardImage(it.id, pic).enqueue(object : Callback<ResponseBody> {
-                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                    Toast.makeText(this@PostBoardActivity, "불러오기 실패", Toast.LENGTH_SHORT).show()
-                                }
+                            pictureList.add(pic)
 
-                                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                                    response.body()?.let {
-                                        val inputStream = it.byteStream()
-                                        bitmapImages.add(BitmapFactory.decodeStream(inputStream))
+                            val baseURL : String = "http://10.0.2.2:8080/"
+                            val str: String = "${baseURL}/download/${board.id}/${pic}"
 
+                            Glide.with(this@PostBoardActivity)
+                                .asBitmap()
+                                .load(str)
+                                .into(object : CustomTarget<Bitmap>() {
+                                    override fun onResourceReady(
+                                        resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                        bitmapImages.add(resource)
                                         val existingFile : File = File.createTempFile("temp_", ".jpg")
 
                                         var out : FileOutputStream = FileOutputStream(existingFile)
@@ -120,12 +128,12 @@ class PostBoardActivity : AppCompatActivity() {
                                         var requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), existingFile)
                                         images.add(MultipartBody.Part.createFormData("imageFile", pic, requestBody))
 
-                                        image.setImageBitmap(bitmapImages.last())
+                                        //image.setImageBitmap(bitmapImages.last())
                                         existingFile.deleteOnExit()
 
-                                        sliderViewPager = findViewById(R.id.viewpager)
                                         sliderViewPager.offscreenPageLimit = 1
-                                        sliderViewPager.adapter = ViewPagerAdapter(this@PostBoardActivity, bitmapImages)
+                                        var vAdapter = ViewPagerAdapter(this@PostBoardActivity, bitmapImages, images, pictureList)
+                                        sliderViewPager.adapter = vAdapter
 
                                         sliderViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                                             override fun onPageSelected(position : Int) {
@@ -133,10 +141,22 @@ class PostBoardActivity : AppCompatActivity() {
                                             }
                                         })
                                     }
-                                }
-                            })
+
+                                    override fun onLoadCleared(placeholder: Drawable?) {
+                                    }
+                                })
                         }
                     }
+                }
+            })
+        } else {
+            sliderViewPager.offscreenPageLimit = 1
+            var vAdapter = ViewPagerAdapter(this@PostBoardActivity, bitmapImages, images, pictureList)
+            sliderViewPager.adapter = vAdapter
+
+            sliderViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position : Int) {
+                    super.onPageSelected(position)
                 }
             })
         }
@@ -163,6 +183,9 @@ class PostBoardActivity : AppCompatActivity() {
             board.deadlineDate = calculateDeadLine(board.registerDate, 5)
             board.locationX = MyData.getMember().locationX
             board.locationY = MyData.getMember().locationY
+            pictures = ""
+            for(t in pictureList)
+                pictures += t + " "
             board.picture = pictures
 
             Log.d("deadline", board.deadlineDate)
@@ -204,9 +227,9 @@ class PostBoardActivity : AppCompatActivity() {
             })
         }
 
-        image.setOnClickListener() {
+        /*image.setOnClickListener() {
             showAlert()
-        }
+        }*/
     }
 
     // 스피너 설정
@@ -298,20 +321,22 @@ class PostBoardActivity : AppCompatActivity() {
             val file = File(curPhotoPath)
             imageFile = file
             pictures += filename + " ";
+            pictureList.add(filename)
             ++cntImage
             var requestBody : RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
             images.add(MultipartBody.Part.createFormData("imageFile", filename, requestBody))
 
             if(Build.VERSION.SDK_INT < 28) {
                 bitmap = MediaStore.Images.Media.getBitmap(contentResolver, Uri.fromFile(file))
-                image.setImageBitmap(bitmap)
+                //image.setImageBitmap(bitmap)
             } else {
                 val decode = ImageDecoder.createSource(
                     this.contentResolver,
                     Uri.fromFile(file)
                 )
                 bitmap = ImageDecoder.decodeBitmap(decode)
-                image.setImageBitmap(bitmap)
+                //image.setImageBitmap(bitmap)
+                bitmapImages.add(bitmap)
             }
             //savePhoto(bitmap)
         }
@@ -326,9 +351,11 @@ class PostBoardActivity : AppCompatActivity() {
 
             try {
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectImage)
-                image.setImageBitmap(bitmap)
+                //image.setImageBitmap(bitmap)
+                bitmapImages.add(bitmap)
                 imageFile = File(cur)
                 pictures += filename + " ";
+                pictureList.add(filename)
                 var requestBody : RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), File(cur))
                 images.add(MultipartBody.Part.createFormData("imageFile", filename, requestBody))
             } catch (e:Exception) {
