@@ -81,8 +81,11 @@ public class BoardController {
     public Board PostBoard(Board board) {
         String baseDir = "C:\\images\\";
         Board newBoard = new Board(board.getPrice(), board.getTitle(), board.getText(), board.getCategoryId(), board.getNickname(), board.getRegisterDate(), board.getDeadlineDate(), board.getLocationX(), board.getLocationY());
-        if(board.getId() != null)
+        System.out.println("ID : " + board.getId());
+        if(board.getId() != 0L) {
             newBoard.setId(board.getId());
+            boardService.deleteImages(board.getId());
+        }
         newBoard.setPicture(board.getPicture());
         boardService.postBoard(newBoard);
         return newBoard;

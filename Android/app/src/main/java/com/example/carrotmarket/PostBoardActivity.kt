@@ -1,19 +1,28 @@
 package com.example.carrotmarket
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.os.FileUtils
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.content.FileProvider
+import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.carrotmarket.dto.Board
 import com.example.carrotmarket.dto.MyData
 import com.example.carrotmarket.network.RetrofitClient
@@ -23,34 +32,40 @@ import com.gun0912.tedpermission.TedPermission
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class PostBoardActivity : AppCompatActivity() {
     val board : Board = Board(0,0,"","",0,0F,0F,"", "", "", 0, 0, 0, "null")
     val REQUEST_IMAGE_CAPTURE = 1
     val REQUEST_ALBUM = 2
     lateinit var curPhotoPath : String
-    lateinit var image : ImageView
+    //lateinit var image : ImageView
     var images = ArrayList<MultipartBody.Part>()
     var imageFile : File? = null
-    lateinit var filename : String
+    var filename : String = ""
     var cntImage : Int = 0
     var pictures = ""
+    var bitmapImages = ArrayList<Bitmap>()
+    var pictureList = ArrayList<String>()
+    internal lateinit var sliderViewPager : ViewPager2
 
     var categoryData = arrayOf("1", "2", "3", "4", "5", "6")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_board)
-        image = findViewById<ImageView>(R.id.imageView)
+        //image = findViewById<ImageView>(R.id.imageView)
         val categoryChoice = findViewById<Spinner>(R.id.categoryChoice)
         val postButton = findViewById<Button>(R.id.posting)
         val titleText = findViewById<EditText>(R.id.titleText)
@@ -58,11 +73,93 @@ class PostBoardActivity : AppCompatActivity() {
         val pictureButton = findViewById<Button>(R.id.picture)
         val albumButton = findViewById<Button>(R.id.album)
         val price = findViewById<EditText>(R.id.priceText)
+        sliderViewPager = findViewById(R.id.viewpager2)
+        //var tempbnt : Button = findViewById(R.id.tempbnt)
+
 
         var adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoryData)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categoryChoice.adapter = adapter
         var listener = SpinnerListener()
+
+        val editIntent : Intent = getIntent()
+        if(editIntent.hasExtra("id")) {
+            val settingId : Long = editIntent.getLongExtra("id", 0L)
+            board.id = settingId
+
+            val settingRetrofit = RetrofitClient.getInstance()
+            val settingApi = settingRetrofit.create(RetrofitService::class.java)
+
+            settingApi.getBoard(settingId).enqueue(object : Callback<Board> {
+                override fun onFailure(call: Call<Board>, t: Throwable) {
+                    Toast.makeText(this@PostBoardActivity, "불러오기 실패", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onResponse(call: Call<Board>, response: Response<Board>) {
+                    response.body()?.let {
+                        titleText.setText(it.title)
+                        price.setText(it.price.toString())
+                        textMessage.setText(it.text)
+                        pictures = it.picture
+
+                        var existingImages = it.picture.split(' ')
+
+                        for(pic in existingImages) {
+                            if(pic.equals(""))
+                                break
+                            pictureList.add(pic)
+
+                            val baseURL : String = "http://10.0.2.2:8080/"
+                            val str: String = "${baseURL}/download/${board.id}/${pic}"
+
+                            Glide.with(this@PostBoardActivity)
+                                .asBitmap()
+                                .load(str)
+                                .into(object : CustomTarget<Bitmap>() {
+                                    override fun onResourceReady(
+                                        resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                        bitmapImages.add(resource)
+                                        val existingFile : File = File.createTempFile("temp_", ".jpg")
+
+                                        var out : FileOutputStream = FileOutputStream(existingFile)
+                                        bitmapImages.last().compress(Bitmap.CompressFormat.JPEG, 100, out)
+                                        out.close()
+
+                                        var requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), existingFile)
+                                        images.add(MultipartBody.Part.createFormData("imageFile", pic, requestBody))
+
+                                        //image.setImageBitmap(bitmapImages.last())
+                                        existingFile.deleteOnExit()
+
+                                        sliderViewPager.offscreenPageLimit = 1
+                                        var vAdapter = ViewPagerAdapter(this@PostBoardActivity, bitmapImages, images, pictureList)
+                                        sliderViewPager.adapter = vAdapter
+
+                                        sliderViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                                            override fun onPageSelected(position : Int) {
+                                                super.onPageSelected(position)
+                                            }
+                                        })
+                                    }
+
+                                    override fun onLoadCleared(placeholder: Drawable?) {
+                                    }
+                                })
+                        }
+                    }
+                }
+            })
+        } else {
+            sliderViewPager.offscreenPageLimit = 1
+            var vAdapter = ViewPagerAdapter(this@PostBoardActivity, bitmapImages, images, pictureList)
+            sliderViewPager.adapter = vAdapter
+
+            sliderViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position : Int) {
+                    super.onPageSelected(position)
+                }
+            })
+        }
 
         pictureButton.setOnClickListener() {
             setPermission()
@@ -86,23 +183,19 @@ class PostBoardActivity : AppCompatActivity() {
             board.deadlineDate = calculateDeadLine(board.registerDate, 5)
             board.locationX = MyData.getMember().locationX
             board.locationY = MyData.getMember().locationY
+            pictures = ""
+            for(t in pictureList)
+                pictures += t + " "
             board.picture = pictures
 
             Log.d("deadline", board.deadlineDate)
-            //board.location
 
-            var reqbody : RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
-            var body : MultipartBody.Part = MultipartBody.Part.createFormData("imageFile", filename, reqbody)
             var retrofit = RetrofitClient.getInstance()
             var myApi = retrofit.create(RetrofitService::class.java)
             val intent = Intent(this, ListActivity::class.java)
             var tempId : Long
 
-            /*images.forEach { it ->
-                board.picture += it.toString() + " ";
-            }*/
-
-            myApi.boardPosting(board.price, board.title, board.text, board.categoryId, board.nickname, board.registerDate, board.deadlineDate!!, board.locationX, board.locationY, board.picture).enqueue(object : Callback<Board> {
+            myApi.boardPosting(board.id, board.price, board.title, board.text, board.categoryId, board.nickname, board.registerDate, board.deadlineDate!!, board.locationX, board.locationY, board.picture).enqueue(object : Callback<Board> {
                 override fun onResponse(call : Call<Board>, response: Response<Board>) {
                     response.body()?.let {
                         Log.d("result", it.id.toString())
@@ -132,27 +225,11 @@ class PostBoardActivity : AppCompatActivity() {
                     Log.d("absolute fail", t.message)
                 }
             })
-
-            /*myApi.postPicture(tempId, body).enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    if (response?.isSuccessful) {
-                        Log.d("FILE : ", imageFile.toString())
-                        Log.d("Hello world", response.toString());
-                        Toast.makeText(this@PostBoardActivity, "File Uploaded Successfully", Toast.LENGTH_LONG).show()
-                        startActivity(intent)
-                    } else {
-                        Log.d("Hello world", "fail");
-                        Toast.makeText(this@PostBoardActivity, "Fail", Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.d("FILE : ", imageFile.toString())
-                    Log.d("FAIL", t.message);
-                    Toast.makeText(this@PostBoardActivity, "완전 Fail", Toast.LENGTH_LONG).show()
-                }
-            })*/
         }
+
+        /*image.setOnClickListener() {
+            showAlert()
+        }*/
     }
 
     // 스피너 설정
@@ -244,20 +321,22 @@ class PostBoardActivity : AppCompatActivity() {
             val file = File(curPhotoPath)
             imageFile = file
             pictures += filename + " ";
+            pictureList.add(filename)
             ++cntImage
             var requestBody : RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
             images.add(MultipartBody.Part.createFormData("imageFile", filename, requestBody))
 
             if(Build.VERSION.SDK_INT < 28) {
                 bitmap = MediaStore.Images.Media.getBitmap(contentResolver, Uri.fromFile(file))
-                image.setImageBitmap(bitmap)
+                //image.setImageBitmap(bitmap)
             } else {
                 val decode = ImageDecoder.createSource(
                     this.contentResolver,
                     Uri.fromFile(file)
                 )
                 bitmap = ImageDecoder.decodeBitmap(decode)
-                image.setImageBitmap(bitmap)
+                //image.setImageBitmap(bitmap)
+                bitmapImages.add(bitmap)
             }
             //savePhoto(bitmap)
         }
@@ -272,9 +351,11 @@ class PostBoardActivity : AppCompatActivity() {
 
             try {
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectImage)
-                image.setImageBitmap(bitmap)
+                //image.setImageBitmap(bitmap)
+                bitmapImages.add(bitmap)
                 imageFile = File(cur)
                 pictures += filename + " ";
+                pictureList.add(filename)
                 var requestBody : RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), File(cur))
                 images.add(MultipartBody.Part.createFormData("imageFile", filename, requestBody))
             } catch (e:Exception) {
@@ -338,5 +419,20 @@ class PostBoardActivity : AppCompatActivity() {
 
         Log.d("deadline", year.toString() + m + d)
         return year.toString() + m + d
+    }
+
+    private fun showAlert() {
+        val myAlert = AlertDialog.Builder(this)
+        myAlert.setTitle("사진 선택")
+        myAlert.setMessage("사진을 삭제하시겠습니까?")
+        myAlert.setPositiveButton("예") {
+            dialogInterface : DialogInterface, i : Int ->
+            images.removeAt(images.lastIndex)
+        }
+        myAlert.setNegativeButton("취소") {
+            dialogInterface : DialogInterface, i : Int ->
+            Toast.makeText(this, "canceled", Toast.LENGTH_SHORT).show()
+        }
+        myAlert.show()
     }
 }

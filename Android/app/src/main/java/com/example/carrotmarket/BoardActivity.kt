@@ -199,7 +199,10 @@ class BoardActivity: AppCompatActivity() {
                 true
             }
             R.id.boardEdit -> {
-                Toast.makeText(this, "수정하기 클릭", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "수정하기 클릭", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, PostBoardActivity::class.java)
+                intent.putExtra("id", board.id)
+                startActivity(intent)
                 true
             }
             else -> {

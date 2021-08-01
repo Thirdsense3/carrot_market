@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".PostBoardActivity">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,11 +22,53 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="49dp" />
 
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpager2"
+            android:layout_width="match_parent"
+            android:layout_height="152dp"
+
+            app:layout_constraintBottom_toBottomOf="@id/titleText"
+            app:layout_constraintEnd_toEndOf="@id/titleText"
+            app:layout_constraintStart_toStartOf="@id/titleText"
+            app:layout_constraintTop_toTopOf="@id/titleText"
+            />
+
+
+        <!--
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:src="@drawable/ic_launcher_foreground"
+
+            app:layout_constraintBottom_toBottomOf="@id/viewpager2"
+            app:layout_constraintEnd_toEndOf="@id/viewpager2"
+            app:layout_constraintStart_toStartOf="@id/viewpager2"
+            app:layout_constraintTop_toTopOf="@id/viewpager2"/>
+            -->
+
+
+        <!--
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
             android:layout_height="132dp"
-            android:src="@drawable/ic_launcher_foreground" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/layoutIndicators"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/viewFadingEdge"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+            -->
 
         <EditText
             android:id="@+id/priceText"
